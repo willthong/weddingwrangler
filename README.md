@@ -19,7 +19,9 @@ A Django project to help you wrangle a wedding's guests. Wedding Wrangle will:
       later use in some sort of collage or slideshow
 * Support CSV export of guestlist
     * This will allow for mail-merging of physical invites and placecards
+* Support export of QR codes as an alternative RSVP option
 
-The project will mostly store and return text. Logged-in users will have the ability to
+The project will mostly store and return text. It will accept and return images too, for
+'memory' photos from guests, and as QR codes. Logged-in users will have the ability to
 interactively edit guest details.
 
