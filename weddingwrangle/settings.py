@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+APP_NAME = "Wedding Wrangle"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-c$jd3#kg82xf5o9lm@y=r#e5xam4-rc6gp%vu*iruvyx=#+t4z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,8 +38,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "weddingwrangle",
+    "django_extensions",
+    "crispy_forms",
+    "django_tables2",
+    "weddingwrangle.apps.WeddingwrangleConfig",
 ]
+
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

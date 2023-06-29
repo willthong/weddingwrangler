@@ -25,3 +25,23 @@ The project will mostly store and return text. It will accept and return images 
 'memory' photos from guests, and as QR codes. Logged-in users will have the ability to
 interactively edit guest details.
 
+# Getting started
+
+1. Initialise Django's database; from the project's root directory, run:
+
+``` 
+python manage.py check
+python manage.py makemigrations
+python manage.py migrate
+```
+2. Create an account and load initial data; still from the project's root directory, 
+run:
+```
+python manage.py createsuperuser
+python manage.py loaddata weddingwrangle/initial_data.json
+``` 
+
+3. *(Optional): import sample data to play with the database: go to
+   localhost:8000/guests and import import_data.csv*
+   * TODO: make this a link
+
