@@ -14,11 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from . import views
 
+app_name="weddingwrangle"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("guests/", views.GuestListView.as_view(), name="guest_list"),
     path("accounts/", include("django.contrib.auth.urls")),
+    path(
+        "rsvp/<rsvp_link>",
+        views.RSVPView.as_view(success_url=reverse_lazy("guest_list")), 
+        name="rsvp"
+    ),
 ]
