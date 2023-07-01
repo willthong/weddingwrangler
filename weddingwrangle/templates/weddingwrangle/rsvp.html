@@ -1,0 +1,19 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+  <h1> RSVP for {{ guest.title }} {{ guest.first_name }} {{ guest.surname }} </h1>
+
+  <p>
+    <form action="" method="post" id="rsvp_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <input type="submit" value="Submit">
+      <input type="submit" value="Cancel"> 
+    </form>
+  </p>
+
+{% endblock %}
+
+
+

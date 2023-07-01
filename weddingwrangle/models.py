@@ -20,6 +20,7 @@ class Position(models.Model):
 
 class RSVPStatus(models.Model):
     name = models.CharField(max_length=11)
+    verbose_name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -27,10 +28,6 @@ class RSVPStatus(models.Model):
     class Meta:
         verbose_name = "RSVP Status"
         verbose_name_plural = "RSVP Statuses"
-
-
-class Partnership(models.Model):
-    pass
 
 
 class Dietary(models.Model):
@@ -75,7 +72,7 @@ class Guest(models.Model):
     # Unlinked fields
     first_name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
-    email_address = models.CharField(max_length=50)
+    email_address = models.CharField(max_length=50, blank=True)
     rsvp_link = models.CharField(max_length=15, verbose_name="RSVP Link")
     rsvp_qr = models.BinaryField(
         null=True, blank=True, editable=True, verbose_name="RSVP QR"
@@ -92,12 +89,11 @@ class Guest(models.Model):
         related_name="guest",
         verbose_name="RSVP Status",
     )
-    partnership = models.ForeignKey(
-        Partnership,
-        on_delete=models.CASCADE,
-        blank=True,
-        related_name="partnership",
+    partner = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
 
     # Many-to-many fields

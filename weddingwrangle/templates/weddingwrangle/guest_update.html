@@ -1,0 +1,31 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+  <h1> Editing {{ guest.title }} {{ guest.first_name }} {{ guest.surname }} </h1> 
+
+  <p>
+    <form action="" method="post" id="guest_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+  </p>
+   
+  <p>
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" 
+       onclick="window.location.href='{% url 'guest_list' %}';return false;">
+  </p>
+
+  <p>
+    RSVP link: <a href={% url 'rsvp' guest.rsvp_link %}>{{ guest.rsvp_link }}</a>
+  </p>
+
+  <p>
+   <a href={% url 'guest_delete' guest.id %}>Delete guest</a>
+  </p>
+    </form>
+
+{% endblock %}
+
+<!-- TODO: add delete guest button -->
+

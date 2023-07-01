@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "django_tables2",
     "weddingwrangle.apps.WeddingwrangleConfig",
+    "qr_code",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
