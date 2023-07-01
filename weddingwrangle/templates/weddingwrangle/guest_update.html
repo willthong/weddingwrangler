@@ -1,5 +1,6 @@
 {% extends "base_bootstrap.html" %}
 {% load crispy_forms_tags %}
+{% load qr_code %}
 {% block content %}
 
   <h1> Editing {{ guest.title }} {{ guest.first_name }} {{ guest.surname }} </h1> 
@@ -8,6 +9,7 @@
     <form action="" method="post" id="guest_form" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
+    </form>
   </p>
    
   <p>
@@ -16,16 +18,28 @@
        onclick="window.location.href='{% url 'guest_list' %}';return false;">
   </p>
 
-  <p>
-    RSVP link: <a href={% url 'rsvp' guest.rsvp_link %}>{{ guest.rsvp_link }}</a>
-  </p>
+    <table>
+      <tr>
+        <td>
+          RSVP link:
+        </td>
+        <td>
+          <a href={% url 'rsvp' guest.rsvp_link %}>{{ guest.rsvp_link }}</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          RSVP QR:
+        </td>
+        <td>
+          {% qr_from_text qr_url size="t" image_format="png" %}
+        </td>
+      </tr>
+    </table>
 
   <p>
    <a href={% url 'guest_delete' guest.id %}>Delete guest</a>
   </p>
-    </form>
 
 {% endblock %}
-
-<!-- TODO: add delete guest button -->
 

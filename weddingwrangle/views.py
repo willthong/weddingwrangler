@@ -3,7 +3,7 @@ from django.views.generic.edit import UpdateView, CreateView, UpdateView, Delete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django_tables2 import SingleTableView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from weddingwrangle.models import Guest
 from weddingwrangle.tables import GuestTable
 from weddingwrangle.forms import RSVPForm, GuestForm
@@ -41,6 +41,14 @@ class GuestUpdate(LoginRequiredMixin, UpdateView):
     form_class = GuestForm
     success_url = reverse_lazy("guest_list")
     template_name_suffix = "_update"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rsvp_link = context["object"].rsvp_link
+        context["qr_url"] = self.request.build_absolute_uri(
+            reverse("rsvp", args=[rsvp_link])
+        )
+        return context
 
 
 class GuestDelete(LoginRequiredMixin, DeleteView):

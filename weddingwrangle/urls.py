@@ -30,5 +30,4 @@ urlpatterns = [
         views.RSVPView.as_view(success_url=reverse_lazy("guest_list")), 
         name="rsvp"
     ),
-    # path("guests/<int:pk>/update/", views.GuestUpdate.as_view(), name="guest_update"),
 ]
