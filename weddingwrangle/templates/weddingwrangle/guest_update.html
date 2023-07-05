@@ -9,16 +9,22 @@
     <form action="" method="post" id="guest_form" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
+        <input type="submit" value="Submit">
+        <input type="submit" value="Cancel" 
+           onclick="window.location.href='{% url 'guest_list' %}';return false;">
     </form>
   </p>
    
-  <p>
-    <input type="submit" value="Submit">
-    <input type="submit" value="Cancel" 
-       onclick="window.location.href='{% url 'guest_list' %}';return false;">
-  </p>
 
     <table>
+      <tr>
+        <td>
+          RSVP at:
+        </td>
+        <td>
+          {{ guest.rsvp_at|date:"d F Y, P" }}
+        </td>
+      </tr>
       <tr>
         <td>
           RSVP link:

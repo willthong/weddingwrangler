@@ -1,0 +1,20 @@
+{% extends "base_bootstrap.html" %}
+
+{% block content %}
+<head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<h1> WeddingWrangle Home </h1>
+
+<body>
+
+  {% autoescape off %}
+    {{ plot_div }}
+  {% endautoescape %}
+
+</body>
+{% endblock %}
+
+
+

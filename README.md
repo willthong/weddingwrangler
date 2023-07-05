@@ -45,3 +45,10 @@ python manage.py loaddata weddingwrangle/initial_data.json
    localhost:8000/guests and import import_data.csv*
    * TODO: make this a link
 
+# To do
+
+* Build home screen
+* Build emails
+* Build QR code export
+* Build CSV import button
+* Buidl CSV export

@@ -103,6 +103,7 @@ class Guest(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    rsvp_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         self.full_name = self.first_name + " " + self.surname

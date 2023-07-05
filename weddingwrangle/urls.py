@@ -20,14 +20,19 @@ from . import views
 app_name = "weddingwrangle"
 urlpatterns = [
     path("admin", admin.site.urls),
-    path("guests", views.GuestListView.as_view(), name="guest_list"),
+    path("", views.HomePage.as_view(), name="home"),
+    path("guests", views.GuestList.as_view(), name="guest_list"),
     path("guests/create", views.GuestCreate.as_view(), name="guest_create"),
-    path("guests/<int:pk>/update", views.GuestUpdate.as_view(), name="guest_update"),
+    path(
+        "guests/<int:pk>/update",
+        views.GuestUpdate.as_view(success_url=reverse_lazy("guest_list")),
+        name="guest_update",
+    ),
     path("guests/<int:pk>/delete", views.GuestDelete.as_view(), name="guest_delete"),
     path("accounts", include("django.contrib.auth.urls")),
     path(
         "rsvp/<str:rsvp_link>",
-        views.RSVPView.as_view(success_url=reverse_lazy("guest_list")), 
-        name="rsvp"
+        views.RSVPView.as_view(success_url=reverse_lazy("guest_list")),
+        name="rsvp",
     ),
 ]
