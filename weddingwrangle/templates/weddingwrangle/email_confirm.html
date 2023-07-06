@@ -1,0 +1,25 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+  <h1> Are you sure? </h1>
+
+  <p>
+    <form action="" method="post" id="email_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <input type="submit" value="Preview audience beore sending">
+    </form>
+  </p>
+  <p>
+    <em>
+      By default, all emails will exclude declined guests, the bride and the groom 
+    </em>
+  </p>
+
+
+
+{% endblock %}
+
+
+

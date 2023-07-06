@@ -51,18 +51,21 @@ class DietaryOther(models.Model):
 
 
 class Audience(models.Model):
-    name = models.CharField(max_length=30)
+    # M2M relationship with guests is defined within Guest class
+    name = models.CharField(max_length=100)
+    positions = models.ManyToManyField(Position, related_name="audience", blank=True)
+    rsvp_statuses = models.ManyToManyField(RSVPStatus, related_name="audience", blank=True)
 
     def __str__(self):
         return self.name
 
-    # M2M relationship with guests is defined within Guest class
 
 
 class Email(models.Model):
     subject = models.CharField(max_length=100)
+    text = models.CharField(max_length=10000000)
     sent = models.BooleanField(default=False)
-    audiences = models.ManyToManyField(Audience, related_name="email")
+    audience = models.ForeignKey(Audience, on_delete=models.CASCADE, related_name="email")
 
     def __str__(self):
         return self.subject
@@ -75,7 +78,7 @@ class Guest(models.Model):
     email_address = models.CharField(max_length=50, blank=True)
     rsvp_link = models.CharField(max_length=15, verbose_name="RSVP Link")
     rsvp_qr = models.BinaryField(
-        null=True, blank=True, editable=True, verbose_name="RSVP QR"
+        null=True, blank=True, editable=False, verbose_name="RSVP QR"
     )
 
     # One-to-many fields

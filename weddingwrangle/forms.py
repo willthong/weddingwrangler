@@ -1,5 +1,5 @@
 from django import forms
-from weddingwrangle.models import Guest, RSVPStatus
+from weddingwrangle.models import Guest, Email, Audience
 from weddingwrangle.scripts import csv_import
 from django.utils import timezone
 
@@ -15,6 +15,34 @@ def rsvp_time_update(self, form_instance):
     ):
         form_instance.rsvp_at = timezone.now()
     return form_instance
+
+
+def audience_update(self, form_instance):
+    """If the RSVP Status or Position changes, add the guest to the relevant
+    Audience."""
+    if (
+        # The form response rsvp_status is different to the the original record
+        (form_instance.rsvp_status.id != self.initial.get("rsvp_status")) or
+        (form_instance.position.id != self.initial.get("position")) 
+    ):
+        # Pick an appropriate audience
+        potential = Audience.objects.get(id=4)
+        no_response = Audience.objects.get(id=3)
+        attending = Audience.objects.get(id=2)
+        if form_instance.position.name != "Guest":
+            return form_instance
+        elif form_instance.rsvp_status.name == "Accepted":
+            form_instance.audiences.add(attending)
+            form_instance.audiences.add(potential)
+        elif form_instance.rsvp_status.name == "Declined":
+            form_instance.audiences.clear()
+        elif form_instance.rsvp_status.name == "Pending":
+            form_instance.audiences.add(no_response)
+            form_instance.audiences.add(potential)
+        return form_instance
+    else:
+        return form_instance
+            
 
 
 
@@ -38,8 +66,10 @@ class RSVPForm(forms.ModelForm):
         # Override ModelForm's save method
         form_instance = super().save(commit=False)
         form_instance = rsvp_time_update(self, form_instance)
+        form_instance = audience_update(self, form_instance)
         if commit:
             form_instance.save()
+            self.save_m2m()
         return form_instance
     class Meta:
         model = Guest
@@ -73,8 +103,23 @@ class GuestForm(forms.ModelForm):
         if form_instance.rsvp_link == "":
             form_instance.rsvp_link = csv_import.generate_key()
         form_instance = rsvp_time_update(self, form_instance)
+        form_instance = audience_update(self, form_instance)
         if commit:
+            print(form_instance.dietaries.all())
             form_instance.save()
+            self.save_m2m()
         return form_instance
 
+
+class NewEmailForm(forms.ModelForm):
+    """Extends ModelForm in order to customise field types"""
+
+    class Meta:
+        model = Email
+        fields = [
+            "subject",
+            "audience",
+            "text",
+        ]
+        widgets = {"audience": forms.RadioSelect, "text": forms.Textarea}
 

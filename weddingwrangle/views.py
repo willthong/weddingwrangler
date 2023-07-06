@@ -1,4 +1,4 @@
-from django.db.models import Min, Count, Q
+from django.db.models import Min
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,9 +9,9 @@ from django.utils import timezone
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 from datetime import timedelta, datetime, time
-from weddingwrangle.models import Guest
+from weddingwrangle.models import Guest, Email
 from weddingwrangle.tables import GuestTable
-from weddingwrangle.forms import RSVPForm, GuestForm
+from weddingwrangle.forms import RSVPForm, GuestForm, NewEmailForm
 
 
 class GuestList(LoginRequiredMixin, SingleTableView):
@@ -152,3 +152,20 @@ class HomePage(LoginRequiredMixin, TemplateView):
 
         context["plot_div"] = plot_div
         return context
+
+
+class Emails(LoginRequiredMixin, CreateView):
+    model = Email
+    form_class = NewEmailForm
+    # success_url = reverse("guest_list", args=[self.object])
+    template_name_suffix = "_create"
+
+
+class EmailConfirm(LoginRequiredMixin, TemplateView):
+    template_name = "weddingwrangle/email_confirm.html"
+    success_url = reverse_lazy("guest_list")
+
+
+# Emails page needs: list of sent emails (Email ID, date, subject and audience); new
+# email form which includes checkboxes for audiences, free text for draft and buttons to
+# add guest first name, RSVP QR code and save/review recipients

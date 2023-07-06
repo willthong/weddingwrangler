@@ -47,8 +47,8 @@ python manage.py loaddata weddingwrangle/initial_data.json
 
 # To do
 
-* Build home screen
 * Build emails
+* Build sidebar
 * Build QR code export
 * Build CSV import button
 * Buidl CSV export
