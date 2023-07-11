@@ -1,0 +1,33 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_tags %}
+{% load qr_code %}
+
+{% block content %}
+
+  <h1> Sent email: {{ object.subject }} </h1> 
+
+  <p>
+  {% if object.date_sent == None %}
+    Unsent
+  {% else %}
+    Sent on {{ object.date_sent|date:"j F Y" }} to:
+    <ul>
+      {% for guest in object.audience.guest.all %} 
+        {% if guest.email_address %}
+          <li> 
+            {{ guest.title }} {{ guest.first_name }} {{ guest.surname }} 
+            ({{ guest.email_address }}): {{ guest.rsvp_status }}
+          </li>
+        {% endif %}
+      {% endfor %}    
+    </ul>
+    
+  {% endif %}
+  </p>
+    <h2> Message: </h2>
+    <p>
+      {{ object.text|linebreaksbr }}
+    </p>
+
+{% endblock %}
+

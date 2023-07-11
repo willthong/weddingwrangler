@@ -2,21 +2,57 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-  <h1> Are you sure? </h1>
+<h1> Confirm sending "{{ object.subject }}"</h1>
 
+  <h2> 
+    To: 
+  </h2>
   <p>
-    <form action="" method="post" id="email_form" enctype="multipart/form-data">
+    <ul>
+    {% for guest in object.audience.guest.all %} 
+      {% if guest.email_address %}
+        <li> 
+          {{ guest.title }} {{ guest.first_name }} {{ guest.surname }} 
+          ({{ guest.email_address }}): {{ guest.rsvp_status }}
+        </li>
+      {% endif %}
+    {% endfor %}    
+    </ul>
+  </p>
+
+  <h2>
+    Message:
+  </h2>
+  <p>
+    {{ object.text|linebreaksbr }}
+  </p>
+
+      
+    <form action="" method="post" id="email_confirm" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form|crispy }}
-      <input type="submit" value="Preview audience beore sending">
+      <input type="submit" value="Send email">
+      <input type="submit" value="Cancel"
+        onclick="window.location.href='{% url "email_list" %}'; return false;">
     </form>
   </p>
-  <p>
-    <em>
-      By default, all emails will exclude declined guests, the bride and the groom 
-    </em>
-  </p>
 
+
+  {% if uncontactable_guests %}
+    <h2>
+      Guests to contact separately
+    </h2>
+    <p>
+      <ul>
+        {% for guest in object.audience.guest.all %} 
+          {% if not guest.email_address %}
+            <li> 
+              {{ guest.title }} {{ guest.first_name }} {{ guest.surname }}
+            </li>
+          {% endif %}
+        {% endfor %}    
+      </ul>
+    </p>
+  {% endif %}
 
 
 {% endblock %}

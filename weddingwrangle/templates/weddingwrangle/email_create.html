@@ -1,6 +1,22 @@
 {% extends "base_bootstrap.html" %}
+
+
 {% load crispy_forms_tags %}
 {% block content %}
+
+  <h1> Sent emails </h1>
+  <ul>
+
+    {% for email in emails %}
+      <li>{{ email.subject }} (sent {{ email.date_sent|date:"j F Y" }} to 
+        <a href="{% url 'email_detail' email.id %}">{{ email.count }} guests)</a></li>
+
+    {% empty %}
+    </ul>
+      Sorry - no emails have been sent yet!
+    <ul>
+    {% endfor %}
+  </ul>
 
   <h1> New email </h1>
 
@@ -8,16 +24,37 @@
     <form action="" method="post" id="email_form" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
+      <a href="#" class="template-link" data-textpart="first_name">Add first name</a>
+      <br>
+      <a href="#" class="template-link" data-textpart="rsvp_link">Add RSVP link</a>
+      <br>
+      <a href="#" class="template-link" data-textpart="rsvp_qr_code">Add RSVP QR Code</a>
+      <br><br>
       <input type="submit" value="Preview audience beore sending">
     </form>
   </p>
   <p>
     <em>
-      By default, all emails will exclude declined guests, the bride and the groom 
+      By default, all emails will not be sent to declined guests, the bride or the groom 
     </em>
   </p>
 
+  {% verbatim %}
 
+<script>
+  $(function () {
+    $('.template-link').on('click', function () { 
+      var textbox = $("#id_text");      
+      var textpart = $(this).data('textpart');
+      var startPos = textbox[0].selectionStart;
+      var endPos = textbox[0].selectionEnd;
+      textbox.val(textbox.val().substring(0, startPos) + "{{ " + textpart + " }}"
+        + textbox.val().substring(endPos));
+    });
+  });
+
+</script>
+  {% endverbatim %}
 
 {% endblock %}
 

@@ -4,6 +4,10 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from weddingwrangle import views
 
+def convert_to_url(self, value):
+    url = reverse("guest_update", args=[value])
+    return mark_safe(f'<a href="{url}">{value}</a>')
+
 
 class GuestTable(django_tables2.Table):
     pk = django_tables2.Column(verbose_name="ID")
@@ -23,6 +27,3 @@ class GuestTable(django_tables2.Table):
             "dietaries",
         )
     
-    def render_pk(self, value):
-        url = reverse("guest_update", args=[value])
-        return mark_safe(f'<a href="{url}">{value}</a>')

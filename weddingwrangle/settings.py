@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -113,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/London"
 
 USE_I18N = True
 
@@ -136,3 +137,15 @@ DJANGO_TABLES2_TABLE_ATTRS = {
         'class': 'table-light',
     },
 }
+
+# Email settings
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_LOCALTIME = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+FROM_EMAIL = "wedding@willthong.com"
+
+# QR Code settings
+SERVE_QR_CODE_IMAGE_PATH = "qr-code-image/"

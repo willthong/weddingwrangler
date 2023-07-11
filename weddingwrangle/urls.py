@@ -29,7 +29,16 @@ urlpatterns = [
         name="guest_update",
     ),
     path("guests/<int:pk>/delete/", views.GuestDelete.as_view(), name="guest_delete"),
-    path("emails/", views.Emails.as_view(), name="emails"),
+    path("email/", views.EmailList.as_view(), name="email_list"),
+    path(
+        "email/<int:pk>/email_confirm/",
+        views.EmailConfirm.as_view(
+            success_url=reverse_lazy("email_list"), 
+        ),
+        name="email_confirm",
+    ),
+    path("email/<int:pk>/detail/", views.EmailDetail.as_view(), name="email_detail"),
+    path("qr_code/", include("qr_code.urls", namespace="qr_code"), name="qr_urls"),
     path("accounts/", include("django.contrib.auth.urls")),
     path(
         "rsvp/<str:rsvp_link>/",

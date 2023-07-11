@@ -123,3 +123,4 @@ class NewEmailForm(forms.ModelForm):
         ]
         widgets = {"audience": forms.RadioSelect, "text": forms.Textarea}
 
+        
