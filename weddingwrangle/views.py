@@ -182,7 +182,7 @@ class EmailList(LoginRequiredMixin, CreateView):
 class EmailConfirm(LoginRequiredMixin, UpdateView):
     model = Email
     template_name_suffix = "_confirm"
-    success_url = reverse_lazy("email_list")
+    success_url = reverse_lazy("email_create")
     fields = "__all__"
 
     def get_context_data(self, **kwargs):

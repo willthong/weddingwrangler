@@ -27,3 +27,6 @@ class GuestTable(django_tables2.Table):
             "dietaries",
         )
     
+    def render_pk(self, value):
+        return convert_to_url(self, value)
+

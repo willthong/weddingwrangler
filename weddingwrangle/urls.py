@@ -29,11 +29,11 @@ urlpatterns = [
         name="guest_update",
     ),
     path("guests/<int:pk>/delete/", views.GuestDelete.as_view(), name="guest_delete"),
-    path("email/", views.EmailList.as_view(), name="email_list"),
+    path("email/", views.EmailList.as_view(), name="email_create"),
     path(
         "email/<int:pk>/email_confirm/",
         views.EmailConfirm.as_view(
-            success_url=reverse_lazy("email_list"), 
+            success_url=reverse_lazy("email_create"), 
         ),
         name="email_confirm",
     ),
