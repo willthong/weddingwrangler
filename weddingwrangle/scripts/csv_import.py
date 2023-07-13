@@ -43,6 +43,7 @@ def csv_import_base(file_handler):
             email_address=row[3],
             position=Position.objects.get(name=row[5]),
             rsvp_status=RSVPStatus.objects.get(name="Pending"),
+            rsvp_link=rsvp_link,
         )
 
         # Process dietaries

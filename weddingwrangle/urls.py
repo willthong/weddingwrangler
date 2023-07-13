@@ -24,7 +24,8 @@ urlpatterns = [
     path("", views.HomePage.as_view(), name="home"),
     path("guests/", views.GuestList.as_view(), name="guest_list"),
     path("guests/create/", views.GuestCreate.as_view(), name="guest_create"),
-    path("guests/export/", views.export_csv, name="guest_export"),
+    path("guests/export/csv", views.export_csv, name="guest_export_csv"),
+    path("guests/export/qr", views.export_qr, name="guest_export_qr"),
     path("guests/upload/", views.GuestUpload.as_view(), name="guest_upload"),
     path(
         "guests/<int:pk>/update/",

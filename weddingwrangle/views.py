@@ -1,14 +1,18 @@
 import csv
 from io import StringIO
+import os, shutil
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 from re import sub, search
 from datetime import timedelta, datetime, time
+from zipfile import ZipFile
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db.models import Min
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.shortcuts import render
 from django_tables2 import SingleTableView
 from django.template.loader import render_to_string
@@ -23,7 +27,7 @@ from weddingwrangle.forms import RSVPForm, GuestForm, NewEmailForm, CSVForm
 from weddingwrangle.models import Guest, Email
 from weddingwrangle.tables import GuestTable
 from qr_code.qrcode.serve import make_qr_code_url
-from qr_code.qrcode.maker import QRCodeOptions
+from qr_code.qrcode.maker import QRCodeOptions, make_qr_code_image
 from weddingwrangle.scripts import csv_import
 
 
@@ -275,8 +279,27 @@ class EmailDetail(LoginRequiredMixin, DetailView):
     template_name = "weddingwrangle/email_detail.html"
 
 
+class GuestUpload(LoginRequiredMixin, View):
+    template_name = "weddingwrangle/guest_upload.html"
+    success_url = reverse_lazy("guest_list")
+
+    def get(self, request):
+        form = CSVForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = StringIO(request.FILES["csv"].read().decode("utf-8"))
+            csv_import.csv_import_base(file)
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {"form": form})
+
+
+@login_required
 def export_csv(response):
     """Exports a CSV file of the guestlist"""
+
     # https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
     date = datetime.today().strftime("%Y-%m-%d")
     response = HttpResponse(
@@ -328,18 +351,48 @@ def export_csv(response):
     return response
 
 
-class GuestUpload(LoginRequiredMixin, View):
-    template_name = "weddingwrangle/guest_upload.html"
-    success_url = reverse_lazy("guest_list")
+@login_required
+def export_qr(request):
+    """Exports QR codes in a zip file; each QR code is named after the appropriate guest"""
 
-    def get(self, request):
-        form = CSVForm()
-        return render(request, self.template_name, {"form": form})
+    folder = "weddingwrangle/qr_codes/"
+    zip_filename = "weddingwrangle_qr_code_export"
+    zip_full_filename = zip_filename + ".zip"
 
-    def post(self, request):
-        form = CSVForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = StringIO(request.FILES["csv"].read().decode("utf-8"))
-            csv_import.csv_import_base(file)
-            return HttpResponseRedirect(self.success_url)
-        return render(request, self.template_name, {"form": form})
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print("Failed to delete %s. Reason: %s" % (file_path, e))
+
+    for guest in Guest.objects.all():
+        filename = (
+            folder
+            + guest.first_name.lower()
+            + "_"
+            + guest.surname.lower()
+            + "_"
+            + "qr.png"
+        )
+        qr_options = QRCodeOptions(image_format="png", size="s")
+        current_site = get_current_site(request)
+        protocol = "https" if request.is_secure() else "http"
+        path = reverse("rsvp", args=[guest.rsvp_link])
+        rsvp_url = f"{protocol}://{current_site}{path}"
+        file = open(filename, "wb")
+        file.write(make_qr_code_image(rsvp_url, qr_options))
+        file.close()
+
+    shutil.make_archive(zip_filename, "zip", folder)
+
+    response = HttpResponse(
+        open(zip_full_filename, "rb").read(),
+        content_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename={zip_filename}"},
+    )
+
+    return response
