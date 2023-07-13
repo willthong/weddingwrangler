@@ -1,4 +1,5 @@
 import csv
+from io import StringIO
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 from re import sub, search
@@ -8,19 +9,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db.models import Min
 from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
 from django_tables2 import SingleTableView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
+from weddingwrangle.forms import RSVPForm, GuestForm, NewEmailForm, CSVForm
 from weddingwrangle.models import Guest, Email
 from weddingwrangle.tables import GuestTable
-from weddingwrangle.forms import RSVPForm, GuestForm, NewEmailForm
 from qr_code.qrcode.serve import make_qr_code_url
 from qr_code.qrcode.maker import QRCodeOptions
+from weddingwrangle.scripts import csv_import
 
 
 class GuestList(LoginRequiredMixin, SingleTableView):
@@ -322,3 +326,20 @@ def export_csv(response):
         )
 
     return response
+
+
+class GuestUpload(LoginRequiredMixin, View):
+    template_name = "weddingwrangle/guest_upload.html"
+    success_url = reverse_lazy("guest_list")
+
+    def get(self, request):
+        form = CSVForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = StringIO(request.FILES["csv"].read().decode("utf-8"))
+            csv_import.csv_import_base(file)
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {"form": form})

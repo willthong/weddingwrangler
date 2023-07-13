@@ -1,12 +1,21 @@
 {% extends "base_bootstrap.html" %}
 
 {% block content %}
-<h1> Guests </h1>
+  <h1> Guests </h1>
 
-<a href="{% url "guest_create" %}">New guest</a> &nbsp;&nbsp;
-<a href="{% url "guest_export" %}">Export guestlist</a>
+  <br>
+  <button onclick="window.location.href='{% url "guest_create" %}';" type="button" class="btn btn-primary">
+    New guest
+  </button>
+  <button onclick="window.location.href='{% url "guest_export" %}';" type="button" class="btn btn-primary">
+    Export guestlist
+  </button>
+  <button onclick="window.location.href='{% url "guest_upload" %}';" type="button" class="btn btn-primary">
+    Upload guestlist
+  </button>
 
   {% if object_list %}
+    <br><br>
     {% load render_table from django_tables2 %}
     <div class=table-respoonsive">
       {% render_table table %}

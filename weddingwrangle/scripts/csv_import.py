@@ -24,9 +24,7 @@ def generate_key():
         pass
     return key
 
-
-def run():
-    file_handler = open("weddingwrangle/import_data.csv")
+def csv_import_base(file_handler):
     reader = csv.reader(file_handler)
     next(reader)  # Skip header row
 
@@ -45,7 +43,6 @@ def run():
             email_address=row[3],
             position=Position.objects.get(name=row[5]),
             rsvp_status=RSVPStatus.objects.get(name="Pending"),
-            rsvp_link=rsvp_link,
         )
 
         # Process dietaries
@@ -59,3 +56,8 @@ def run():
             pass
 
         guest.save()
+
+def run():
+   file_handler = open("weddingwrangle/import_data.csv")
+   csv_import_base(file_handler)
+

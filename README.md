@@ -42,10 +42,9 @@ python manage.py loaddata weddingwrangle/initial_data.json
 ``` 
 
 3. *(Optional): import sample data to play with the database: go to
-   localhost:8000/guests and import import_data.csv*
-   * TODO: make this a link
+   localhost:8000/guests, pick "Upload guestlist" and upload upload_data.csv*
 
 # To do
 
-* Build QR code export
-* Build CSV import button
+* Build QR code export: output a zipped folder of all the QR codes, for (eg) printing
+  onto invites
