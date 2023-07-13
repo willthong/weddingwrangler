@@ -24,6 +24,7 @@ urlpatterns = [
     path("", views.HomePage.as_view(), name="home"),
     path("guests/", views.GuestList.as_view(), name="guest_list"),
     path("guests/create/", views.GuestCreate.as_view(), name="guest_create"),
+    path("guests/export/", views.export_csv, name="guest_export"),
     path(
         "guests/<int:pk>/update/",
         views.GuestUpdate.as_view(success_url=reverse_lazy("guest_list")),

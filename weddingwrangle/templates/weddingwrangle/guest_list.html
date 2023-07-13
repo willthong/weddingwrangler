@@ -3,7 +3,8 @@
 {% block content %}
 <h1> Guests </h1>
 
-<a href="{% url "guest_create" %}">New guest</a> 
+<a href="{% url "guest_create" %}">New guest</a> &nbsp;&nbsp;
+<a href="{% url "guest_export" %}">Export guestlist</a>
 
   {% if object_list %}
     {% load render_table from django_tables2 %}

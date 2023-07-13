@@ -1,3 +1,4 @@
+import csv
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 from re import sub, search
@@ -6,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db.models import Min
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django_tables2 import SingleTableView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
@@ -268,3 +269,56 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
 class EmailDetail(LoginRequiredMixin, DetailView):
     model = Email
     template_name = "weddingwrangle/email_detail.html"
+
+
+def export_csv(response):
+    """Exports a CSV file of the guestlist"""
+    # https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
+    date = datetime.today().strftime("%Y-%m-%d")
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename='guest_export_{date}.csv'"
+        },
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(
+        [
+            "ID",
+            "Title",
+            "First name",
+            "Surname",
+            "Email address",
+            "Position",
+            "RSVP",
+            "RSVP at",
+            "Partner",
+            "Dietaries",
+        ]
+    )
+    for guest in Guest.objects.all():
+        partner, rsvp_at = "", ""
+        if guest.partner != None:
+            partner = guest.partner.first_name + " " + guest.partner.surname
+        if guest.rsvp_at != None:
+            rsvp_at = guest.rsvp_at.strftime("%Y-%m-%d %H:%M")
+
+        dietaries = [dietary.name for dietary in guest.dietaries.all()]
+
+        writer.writerow(
+            [
+                guest.pk,
+                guest.title.name,
+                guest.first_name,
+                guest.surname,
+                guest.email_address,
+                guest.position.name,
+                guest.rsvp_status.name,
+                rsvp_at,
+                partner,
+                dietaries,
+            ]
+        )
+
+    return response
