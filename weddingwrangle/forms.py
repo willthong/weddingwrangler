@@ -94,18 +94,27 @@ class GuestForm(forms.ModelForm):
             "email_address",
             "position",
             "dietaries",
+            "partner",
         ]
         widgets = {"dietaries": forms.CheckboxSelectMultiple}
 
     def save(self, commit=True):
         # Override ModelForm's save method
         form_instance = super().save(commit=False)
+
+        # Autogenerate RSVP link if blank
         if form_instance.rsvp_link == "":
             form_instance.rsvp_link = csv_import.generate_key()
         form_instance = rsvp_time_update(self, form_instance)
         form_instance = audience_update(self, form_instance)
+
+        # Autogenerate reciprocal partner relationship
+        if form_instance.partner is not None:
+            if form_instance.partner.partner is None:
+                form_instance.partner.partner = form_instance
+                form_instance.partner.save()
+
         if commit:
-            print(form_instance.dietaries.all())
             form_instance.save()
             self.save_m2m()
         return form_instance

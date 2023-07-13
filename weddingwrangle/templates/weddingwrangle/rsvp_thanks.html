@@ -1,0 +1,27 @@
+{% extends "base_bootstrap.html" %}
+{% block content %}
+
+  <h1> Thank you for your response!</h1>
+
+  <p> We're so looking forward to seeing you on our wedding day! If you want to update
+  your response, you can do so at the same link you used to get here. 
+
+  {% if object.partner is not None %}
+    </p>
+    <p> 
+      If you'd like to RSVP on behalf of your partner, {{ object.partner.title }} 
+      {{ object.partner }}, you can do so 
+      <a href="{% url 'rsvp_partner' object.partner.rsvp_link %}">here</a>.
+    </p>
+
+    <p>
+      Otherwise, please feel free to close this page.
+    </p>
+  {% else %}
+    Feel free to close this page now. </p>
+  {% endif %}
+
+    
+{% endblock %}
+
+

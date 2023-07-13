@@ -31,10 +31,32 @@ class GuestList(LoginRequiredMixin, SingleTableView):
 class RSVPView(UpdateView):
     model = Guest
     form_class = RSVPForm
-    success_url = reverse_lazy("guest_list")
-    # TODO: this should redirect to a link thanking the guest and offering an RSVP for
-    # their partner
     template_name = "weddingwrangle/rsvp.html"
+
+    # Override get_success_url method to use the RSVP link
+    def get_success_url(self):
+        url = reverse_lazy("rsvp_thank", args=[self.object.rsvp_link])
+        return url
+
+    # Overriding get_object so that the RSVP link captured by the URL dispatcher is used
+    # to find the object. self.kwargs is a dictionary containing captured URL parameters.
+    def get_object(self):
+        return self.model.objects.get(rsvp_link=self.kwargs["rsvp_link"])
+
+
+class RSVPThank(DetailView):
+    model = Guest
+    template_name = "weddingwrangle/rsvp_thanks.html"
+
+    def get_object(self):
+        return self.model.objects.get(rsvp_link=self.kwargs["rsvp_link"])
+
+
+class RSVPPartner(UpdateView):
+    model = Guest
+    form_class = RSVPForm
+    success_url = reverse_lazy("rsvp_thank_partner")
+    template_name = "weddingwrangle/rsvp_partner.html"
 
     # Overriding get_object so that the RSVP link captured by the URL dispatcher is used
     # to find the object. self.kwargs is a dictionary containing captured URL parameters.

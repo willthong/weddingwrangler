@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from . import views
+from django.views.generic import TemplateView
 
 app_name = "weddingwrangle"
 urlpatterns = [
@@ -42,7 +43,22 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path(
         "rsvp/<str:rsvp_link>/",
-        views.RSVPView.as_view(success_url=reverse_lazy("guest_list")),
+        views.RSVPView.as_view(success_url=reverse_lazy("rsvp_thank")),
         name="rsvp",
+    ),
+    path(
+        "rsvp/<str:rsvp_link>/thanks",
+        views.RSVPThank.as_view(),
+        name="rsvp_thank",
+    ),
+    path(
+        "rsvp/<str:rsvp_link>/partner",
+        views.RSVPPartner.as_view(success_url=reverse_lazy("rsvp_thank_partner")),
+        name="rsvp_partner",
+    ),
+    path(
+        "rsvp/thankyou",
+        TemplateView.as_view(template_name="weddingwrangle/rsvp_thank_partner.html"),
+        name="rsvp_thank_partner",
     ),
 ]

@@ -49,4 +49,6 @@ python manage.py loaddata weddingwrangle/initial_data.json
 
 * Build QR code export
 * Build CSV import button
-* Buidl CSV export
+* Build CSV export
+* Build partnerships function
+

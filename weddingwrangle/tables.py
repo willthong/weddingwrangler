@@ -24,6 +24,7 @@ class GuestTable(django_tables2.Table):
             "email_address",
             "position",
             "rsvp_status",
+            "partner",
             "dietaries",
         )
     
