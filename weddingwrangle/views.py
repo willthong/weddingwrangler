@@ -7,6 +7,7 @@ from re import sub, search
 from datetime import timedelta, datetime, time
 from zipfile import ZipFile
 from django.conf import settings
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site

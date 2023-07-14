@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from . import views
+from django.conf import settings
+from django.contrib.auth.views import LogoutView
 from django.views.generic import TemplateView
 
 app_name = "weddingwrangle"
@@ -24,8 +26,8 @@ urlpatterns = [
     path("", views.HomePage.as_view(), name="home"),
     path("guests/", views.GuestList.as_view(), name="guest_list"),
     path("guests/create/", views.GuestCreate.as_view(), name="guest_create"),
-    path("guests/export/csv", views.export_csv, name="guest_export_csv"),
-    path("guests/export/qr", views.export_qr, name="guest_export_qr"),
+    path("guests/export/csv/", views.export_csv, name="guest_export_csv"),
+    path("guests/export/qr/", views.export_qr, name="guest_export_qr"),
     path("guests/upload/", views.GuestUpload.as_view(), name="guest_upload"),
     path(
         "guests/<int:pk>/update/",
@@ -37,31 +39,37 @@ urlpatterns = [
     path(
         "email/<int:pk>/email_confirm/",
         views.EmailConfirm.as_view(
-            success_url=reverse_lazy("email_create"), 
+            success_url=reverse_lazy("email_create"),
         ),
         name="email_confirm",
     ),
     path("email/<int:pk>/detail/", views.EmailDetail.as_view(), name="email_detail"),
     path("qr_code/", include("qr_code.urls", namespace="qr_code"), name="qr_urls"),
-    path("accounts/", include("django.contrib.auth.urls")),
     path(
         "rsvp/<str:rsvp_link>/",
         views.RSVPView.as_view(success_url=reverse_lazy("rsvp_thank")),
         name="rsvp",
     ),
     path(
-        "rsvp/<str:rsvp_link>/thanks",
+        "rsvp/<str:rsvp_link>/thanks/",
         views.RSVPThank.as_view(),
         name="rsvp_thank",
     ),
     path(
-        "rsvp/<str:rsvp_link>/partner",
+        "rsvp/<str:rsvp_link>/partner/",
         views.RSVPPartner.as_view(success_url=reverse_lazy("rsvp_thank_partner")),
         name="rsvp_partner",
     ),
     path(
-        "rsvp/thankyou",
+        "rsvp/thankyou/",
         TemplateView.as_view(template_name="weddingwrangle/rsvp_thank_partner.html"),
         name="rsvp_thank_partner",
+    ),
+    path("accounts/", include("django.contrib.auth.urls")),
+    # https://stackoverflow.com/a/63445257/3161714
+    path(
+        "logout/",
+        LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL),
+        name="logout",
     ),
 ]

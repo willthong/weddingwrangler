@@ -132,12 +132,16 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+LOGOUT_REDIRECT_URL = "/accounts/login/?next=/"
+
 DJANGO_TABLES2_TABLE_ATTRS = {
     'class': 'table table-hover table-striped',
     'thead': {
         'class': 'table-light',
     },
 }
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
 
 # Email settings
 EMAIL_HOST = "smtp.gmail.com"
@@ -150,3 +154,4 @@ FROM_EMAIL = "wedding@willthong.com"
 
 # QR Code settings
 SERVE_QR_CODE_IMAGE_PATH = "qr-code-image/"
+

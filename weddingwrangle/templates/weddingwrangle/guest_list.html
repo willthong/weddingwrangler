@@ -8,7 +8,10 @@
     New guest
   </button>
   <button onclick="window.location.href='{% url "guest_export_csv" %}';" type="button" class="btn btn-primary">
-    Export guestlist
+    Export guestlist (CSV file)
+  </button>
+  <button onclick="window.location.href='{% url "guest_export_qr" %}';" type="button" class="btn btn-primary">
+    Export QR codes (zip file)
   </button>
   <button onclick="window.location.href='{% url "guest_upload" %}';" type="button" class="btn btn-primary">
     Upload guestlist
