@@ -4,3 +4,5 @@ pyproject.toml
 .env.dev
 .env.prod
 weddingwrangle_qr_code_export.zip
+*.pyc
+__pycache__/
