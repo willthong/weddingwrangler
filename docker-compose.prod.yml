@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  weddingwrangle:
+    container_name: weddingwrangle
+    build: 
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./app/db.sqlite3:/usr/src/app/db.sqlite3
+      - static:/home/app/weddingwrangle/static
+    expose:
+      - 8000
+    env_file:
+      - ./.env.prod
+  nginx-proxy:
+    container_name: nginx-proxy
+    build: nginx
+    restart: always
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+    - static:/home/app/weddingwrangle/static
+    - certs:/etc/nginx/certs
+    - html:/usr/share/nginx/html
+    - vhost:/etc/nginx/vhost.d
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - weddingwrangle
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    env_file:
+      - ./.env.prod.proxy-companion
+    volumes:
+    - certs:/etc/nginx/certs
+    - html:/usr/share/nginx/html
+    - vhost:/etc/nginx/vhost.d
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - acme:/etc/acme.sh
+    depends_on:
+      - nginx-proxy
+
+volumes:
+  static:
+  certs:
+  html:
+  vhost:
+  acme:

@@ -22,13 +22,14 @@ APP_NAME = "Luke & Han's Wedding"
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-c$jd3#kg82xf5o9lm@y=r#e5xam4-rc6gp%vu*iruvyx=#+t4z"
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(config("DEBUG", default=0))
 
-ALLOWED_HOSTS = ["*"]
-
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each,
+# eg 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -126,6 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+# SSL
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -135,9 +141,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGOUT_REDIRECT_URL = "/accounts/login/?next=/"
 
 DJANGO_TABLES2_TABLE_ATTRS = {
-    'class': 'table table-hover table-striped',
-    'thead': {
-        'class': 'table-light',
+    "class": "table table-hover table-striped",
+    "thead": {
+        "class": "table-light",
     },
 }
 
@@ -154,4 +160,3 @@ FROM_EMAIL = "wedding@willthong.com"
 
 # QR Code settings
 SERVE_QR_CODE_IMAGE_PATH = "qr-code-image/"
-

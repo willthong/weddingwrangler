@@ -1,4 +1,6 @@
 *.sqlite3
 pyproject.toml
 .env
+.env.dev
+.env.prod
 weddingwrangle_qr_code_export.zip
