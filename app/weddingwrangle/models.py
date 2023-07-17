@@ -73,6 +73,8 @@ class Email(models.Model):
 
 class Guest(models.Model):
     # Unlinked fields
+    # CR: I'd up your maxlength. Especially if you're backed by Postgres, where it
+    # doesn't affect storage efficiency
     first_name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
     email_address = models.CharField(max_length=50, blank=True)

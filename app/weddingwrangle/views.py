@@ -105,10 +105,14 @@ class GuestDelete(LoginRequiredMixin, DeleteView):
 class HomePage(LoginRequiredMixin, TemplateView):
     template_name = "weddingwrangle/home.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    # CR: here's a cleaner way to generate all the dates, using Python's list
+    # comprehensions
+    def get_all_guest_dates(self):
+        start_date = Guest.objects.aggregate(Min("created_at"))["created_at__min"].date()
+        days = (date.now() - start_date).days
+        return [start_date + timedelta(day = day) for day in range(0, days + 1)]
 
-        # Build a list of dates
+    def get_all_guest_dates(self):
         start_date = Guest.objects.aggregate(Min("created_at"))["created_at__min"]
         start_date = datetime.combine(
             start_date.date(), time.min, tzinfo=timezone.get_default_timezone()
@@ -118,14 +122,67 @@ class HomePage(LoginRequiredMixin, TemplateView):
             guest_number_dates.append(start_date)
             start_date = start_date + timedelta(days=1)
 
-        # Build a list of attending, declined and total guests
+        return guest_number_dates
+
+    # CR: I know this is a function that Django needs you to have, but if you put
+    # all the logic (apart form the bit that builds the context dict) in
+    # 'get_plot_data' (or something similar) and call that from here it's more
+    # obvious what this view is doing
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # CR: each of these little comment headers would be more clear if they
+        # were a function, as I've changed here
+        # CR: I'd probably just rename this variable 'dates'?  Especially if you
+        # move all the logic into child functions
+        guest_number_dates = self.get_all_guest_dates()
+
+        # CR: it might be overkill for small code like this, but I prefer to have
+        # one container with a namedtuple or something, so you'd write:
+
+        # Somewhere above
+        class AttendingStats(collections.namedtuple('AttendingStats', ['attending', 'declined']):
+            # It's better if you calculate derived data instead of storing it,
+            # that way it's harder for you to write a bug that
+            # makes it out of sync with the data it's derived
+            # from
+            def total(self):
+                return self.attending + self.declined
+
+            # You could consider having some load from database function here that
+            # takes a date, either as a static method or a toplevel function.
+
+        # Then you use it like so:
+        counts = [load_attending_stats(date) for date in guest_number_dates]
+        attending_bar = graph_objs.Bar(
+            ...
+            y=[x.attending for x in counts],
+            ...
+        )
+
+
         attending_numbers = []
         declined_numbers = []
         total_guests = []
         for query_date in guest_number_dates:
+            # CR: if django database models support a less than or equal mode I'd
+            # use that instead, it's a little clearer
             query_date = query_date + timedelta(days=1)
+
+            # CR: 'attending_count' isn't much longer but it is clearer
             att_count = (
                 Guest.objects.filter(rsvp_at__lt=query_date)
+                # CR: you should avoid magic numbers if possible, ie reading this
+                # I don't know what 4 means. It's also not obvious from the
+                # definition in models.
+                #
+                # Python has an enum library that's useful for this:
+                #
+                #   class Rsvp(Enum):
+                #     ATTENDING = 4
+                #     DECLINED = 5
+                #     ...
+                # And then in code you just write Rsvp.ATTENDING. Much clearer!
                 .filter(rsvp_status=4)
                 .count()
             )
@@ -225,6 +282,9 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
                 context["uncontactable_guests"] = True
         return context
 
+    # CR: one thing that isn't a big deal is that you can have partial success
+    # here: if one of the emails fail I think you'll have sent all the emails from
+    # before but none of the ones from after
     def post(self, request, *args, **kwargs):
         """Override post() method in order to set the email's date_sent to now, mark the
         email as sent on the guest's record, send the email
@@ -233,6 +293,9 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         self.object.date_sent = datetime.now()
         self.object.save()
+
+        # CR: can you use [self.object] instead of calling [self.get_object()]
+        # again?
         for guest in self.get_object().audience.guest.all():
             if guest.email_address == "":
                 continue
@@ -242,7 +305,10 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
             rsvp_url = self.request.build_absolute_uri(
                 reverse("rsvp", args=[rsvp_link])
             )
+            # CR: I'm not sure single quotes are valid HTML, unlike in Python
             rsvp_url_html = "<a href='" + rsvp_url + "'>" + rsvp_url + "</a>"
+
+            # CR: I think it makes sense to pop the message generation in a function
             merged_message = self.object.text
             if search("{{ rsvp_qr_code }}", self.object.text):
                 qr_options = QRCodeOptions(image_format="png", size="s")
