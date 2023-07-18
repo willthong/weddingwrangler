@@ -1,10 +1,11 @@
 import csv
+from datetime import timedelta, datetime, time
 from io import StringIO
 import os, shutil
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 from re import sub, search
-from datetime import timedelta, datetime, time
+from typing import NamedTuple
 from zipfile import ZipFile
 from django.conf import settings
 from django.contrib.auth import logout
@@ -102,93 +103,103 @@ class GuestDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("guest_list")
 
 
+# Cleaner date generation with list comprehension
+def get_all_dates():
+    start_date = Guest.objects.aggregate(Min("created_at"))["created_at__min"]
+    days = (timezone.now() - start_date).days
+    return [start_date + timedelta(days=day) for day in range(0, days + 1)]
+
+
+# Load stats from database for a given date.
+def load_attending_stats(date):
+    # Defining a named tuple rather than multiple lists
+    class AttendingStats(NamedTuple):
+        date: datetime.date
+        attending: int
+        declined: int
+        pending: int
+        total: int
+
+    # Uses less than / equal to (lte) rather than previous approach of incrementing query_date
+    attending = (
+        Guest.objects.filter(rsvp_at__lte=date)
+        .filter(rsvp_status__name="Accepted")
+        .count()
+    )
+    declined = (
+        Guest.objects.filter(rsvp_at__lte=date)
+        .filter(rsvp_status__name="Declined")
+        .count()
+    )
+    pending = (
+        Guest.objects.filter(created_at__lte=date)
+        .filter(rsvp_status__name="Pending")
+        .count()
+    )
+    total = attending + declined + pending
+    return AttendingStats(date, attending, declined, pending, total)
+
+
+def prepare_plot_data(attending_stats):
+    """Generate plot data for home page graph"""
+    # Decided to use Plotly Figure rather than Express + Dash
+    # https://www.codingwithricky.com/2019/08/28/easy-django-plotly/
+    # https://plotly.com/python-api-reference/generated/plotly.graph_objects.Bar.html
+    # https://plotly.com/python/bar-charts/#bar-chart-with-relative-barmode
+
+    figure = graph_objs.Figure(
+        layout_title_text="Guests",
+    )
+    line = graph_objs.Scatter(
+        name="Invited",
+        x=[date.date for date in attending_stats],
+        y=[date.total for date in attending_stats],
+        opacity=1,
+        marker_color="blue",
+        mode="lines",
+        hovertemplate=" %{x|%d %B %Y} <extra> %{y} guests invited </extra>",
+    )
+    attending_bar = graph_objs.Bar(
+        name="Attending",
+        x=[date.date for date in attending_stats],
+        y=[date.attending for date in attending_stats],
+        opacity=1,
+        marker_color="green",
+        hovertemplate=" %{x|%d %B %Y} <extra> %{y} attending </extra>",
+    )
+    declined_bar = graph_objs.Bar(
+        name="Declined",
+        x=[date.date for date in attending_stats],
+        y=[date.declined for date in attending_stats],
+        opacity=1,
+        marker_color="red",
+        hovertemplate=" %{x|%d %B %Y} <extra> %{y} declined </extra>",
+    )
+    figure.update_xaxes(
+        tickformat="%d/%m",
+        tickvals=[date.date for date in attending_stats],
+        type="date",
+    )
+
+    figure.add_trace(line)
+    figure.add_trace(attending_bar)
+    figure.add_trace(declined_bar)
+    figure.update_layout(barmode="relative")
+    plot_div = plot(figure, output_type="div", include_plotlyjs=False)
+    return plot_div
+
+
 class HomePage(LoginRequiredMixin, TemplateView):
     template_name = "weddingwrangle/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        dates = get_all_dates()
 
-        # Build a list of dates
-        start_date = Guest.objects.aggregate(Min("created_at"))["created_at__min"]
-        start_date = datetime.combine(
-            start_date.date(), time.min, tzinfo=timezone.get_default_timezone()
-        )
-        guest_number_dates = []
-        while start_date <= timezone.now():
-            guest_number_dates.append(start_date)
-            start_date = start_date + timedelta(days=1)
-
-        # Build a list of attending, declined and total guests
-        attending_numbers = []
-        declined_numbers = []
-        total_guests = []
-        for query_date in guest_number_dates:
-            query_date = query_date + timedelta(days=1)
-            att_count = (
-                Guest.objects.filter(rsvp_at__lt=query_date)
-                .filter(rsvp_status=4)
-                .count()
-            )
-            attending_numbers.append(att_count)
-            decl_count = (
-                Guest.objects.filter(rsvp_at__lt=query_date)
-                .filter(rsvp_status=5)
-                .count()
-            )
-            declined_numbers.append(decl_count)
-            guest_count = Guest.objects.filter(created_at__lt=query_date).count()
-            total_guests.append(guest_count)
-
-        # Decided to use Plotly Figure rather than Express + Dash
-        # https://www.codingwithricky.com/2019/08/28/easy-django-plotly/
-        # https://plotly.com/python-api-reference/generated/plotly.graph_objects.Bar.html
-        # https://plotly.com/python/bar-charts/#bar-chart-with-relative-barmode
-
-        figure = graph_objs.Figure(
-            layout_title_text="Guests",
-        )
-
-        attend_bar = graph_objs.Bar(
-            name="Attending",
-            x=guest_number_dates,
-            y=attending_numbers,
-            opacity=1,
-            marker_color="green",
-            hovertemplate=" %{x|%d %B %Y} <extra> %{y} attending </extra>",
-        )
-
-        decl_bar = graph_objs.Bar(
-            name="Declined",
-            x=guest_number_dates,
-            y=declined_numbers,
-            opacity=1,
-            marker_color="red",
-            hovertemplate=" %{x|%d %B %Y} <extra> %{y} declined </extra>",
-        )
-
-        line = graph_objs.Scatter(
-            name="Invited",
-            x=guest_number_dates,
-            y=total_guests,
-            opacity=1,
-            marker_color="blue",
-            mode="lines",
-            hovertemplate=" %{x|%d %B %Y} <extra> %{y} guests invited </extra>",
-        )
-
-        figure.update_xaxes(
-            tickformat="%d/%m",
-            tickvals=guest_number_dates,
-            type="date",
-        )
-
-        figure.add_trace(line)
-        figure.add_trace(attend_bar)
-        figure.add_trace(decl_bar)
-        figure.update_layout(barmode="relative")
-        plot_div = plot(figure, output_type="div", include_plotlyjs=False)
-
-        context["plot_div"] = plot_div
+        # Load named tuple into each date
+        attending_stats = [load_attending_stats(date) for date in dates]
+        # Put all logic into prepare_plot_data function
+        context["plot_div"] = prepare_plot_data(attending_stats)
         return context
 
 
@@ -209,6 +220,49 @@ class EmailList(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         url = reverse_lazy("email_confirm", args=[self.object.pk])
         return url
+
+
+class EmailList(LoginRequiredMixin, CreateView):
+    model = Email
+    form_class = NewEmailForm
+    template_name_suffix = "_create"
+
+    # Retrieve list of emails
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["emails"] = Email.objects.filter(date_sent__isnull=False)
+        for email in context["emails"]:
+            email.count = email.guest.all().count()
+        return context
+
+    # Override get_success_url method to use the newly-created object's PK
+    def get_success_url(self):
+        url = reverse_lazy("email_confirm", args=[self.object.pk])
+        return url
+
+
+def generate_message(self, first_name, rsvp_url, rsvp_url_html):
+    """Turn a request into an email message"""
+    merged_message = self.object.text
+    if search("{{ rsvp_qr_code }}", merged_message):
+        qr_options = QRCodeOptions(image_format="png", size="s")
+        qr_url = make_qr_code_url(rsvp_url, qr_options)
+        qr_url = self.request.build_absolute_uri(qr_url)
+        merged_message = sub(
+            "{{ rsvp_qr_code }}",
+            f'<img src="{qr_url}" alt="{rsvp_url}" title="QR Code" width="200"'
+            f'height="200" style="display:block">',
+            merged_message,
+        )
+    merged_message = sub("{{ first_name }}", first_name, merged_message)
+    merged_message = sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
+    merged_message = mark_safe(merged_message)
+
+    # https://stackoverflow.com/a/49894618/3161714
+    rendered_message = render_to_string(
+        "weddingwrangle/email_template.html", {"email_text": merged_message}
+    )
+    return merged_message, rendered_message
 
 
 class EmailConfirm(LoginRequiredMixin, UpdateView):
@@ -233,7 +287,7 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         self.object.date_sent = datetime.now()
         self.object.save()
-        for guest in self.get_object().audience.guest.all():
+        for guest in self.object.audience.guest.all():
             if guest.email_address == "":
                 continue
             guest.emails.add(self.object)
@@ -243,25 +297,10 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
                 reverse("rsvp", args=[rsvp_link])
             )
             rsvp_url_html = "<a href='" + rsvp_url + "'>" + rsvp_url + "</a>"
-            merged_message = self.object.text
-            if search("{{ rsvp_qr_code }}", self.object.text):
-                qr_options = QRCodeOptions(image_format="png", size="s")
-                qr_url = make_qr_code_url(rsvp_url, qr_options)
-                qr_url = self.request.build_absolute_uri(qr_url)
-                merged_message = sub(
-                    "{{ rsvp_qr_code }}",
-                    f'<img src="{qr_url}" alt="{rsvp_url}" title="QR Code" width="200"'
-                    f'height="200" style="display:block">',
-                    merged_message,
-                )
-            merged_message = sub("{{ first_name }}", first_name, merged_message)
-            merged_message = sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
-            merged_message = mark_safe(merged_message)
-
-            # https://stackoverflow.com/a/49894619/3161714
-            rendered_message = render_to_string(
-                "weddingwrangle/email_template.html", {"email_text": merged_message}
+            merged_message, rendered_message = generate_message(
+                self, first_name, rsvp_url, rsvp_url_html
             )
+
             # https://docs.djangoproject.com/en/4.2/topics/email/
             send_mail(
                 self.object.subject,
