@@ -23,6 +23,7 @@ def sync_audience(guest):
 def sync_partner(guest):
     if guest.partner is not None and guest.partner.partner is None:
         guest.partner.partner = guest
+        guest.partner.save()
     return guest
 
 def run():

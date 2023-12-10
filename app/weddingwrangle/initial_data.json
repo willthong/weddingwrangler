@@ -42,6 +42,13 @@
         }
     },
     {
+        "model": "weddingwrangle.position",
+        "pk": 3,
+        "fields": {
+            "name": "Guest"
+        }
+    },
+    {
         "model": "weddingwrangle.rsvpstatus",
         "pk": 4,
         "fields": {
@@ -105,6 +112,46 @@
         "pk": 6,
         "fields": {
             "name": "Wheat"
+        }
+    },
+    {
+        "model": "weddingwrangle.audience",
+        "pk": 2,
+        "fields": {
+            "name": "All attending guests",
+            "positions": [
+                3
+            ],
+            "rsvp_statuses": [
+                4
+            ]
+        }
+    },
+    {
+        "model": "weddingwrangle.audience",
+        "pk": 3,
+        "fields": {
+            "name": "All guests yet to RSVP",
+            "positions": [
+                3
+            ],
+            "rsvp_statuses": [
+                6
+            ]
+        }
+    },
+    {
+        "model": "weddingwrangle.audience",
+        "pk": 4,
+        "fields": {
+            "name": "All potential guests (excludes Declined)",
+            "positions": [
+                3
+            ],
+            "rsvp_statuses": [
+                4,
+                6
+            ]
         }
     }
 ]
