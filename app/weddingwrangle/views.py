@@ -341,20 +341,20 @@ def export_csv(response):
             "Position",
             "RSVP",
             "RSVP at",
-            "Partner",
+            "Partner first name",
+            "Partner surname",
             "Dietaries",
-            "Audiences",
         ]
     )
     for guest in Guest.objects.all():
-        partner, rsvp_at = "", ""
+        rsvp_at = ""
         if guest.partner != None:
-            partner = guest.partner.first_name + " " + guest.partner.surname
+            partner_first = guest.partner.first_name
+            partner_surname = guest.partner.surname
         if guest.rsvp_at != None:
             rsvp_at = guest.rsvp_at.strftime("%Y-%m-%d %H:%M")
 
         dietaries = [dietary.name for dietary in guest.dietaries.all()]
-        audiences = [audience.name for audience in guest.audiences.all()]
 
         writer.writerow(
             [
@@ -366,9 +366,9 @@ def export_csv(response):
                 guest.position.name,
                 guest.rsvp_status.name,
                 rsvp_at,
-                partner,
+                partner_first,
+                partner_surname,
                 dietaries,
-                audiences,
             ]
         )
 

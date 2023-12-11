@@ -6,3 +6,5 @@ pyproject.toml
 weddingwrangle_qr_code_export.zip
 *.pyc
 __pycache__/
+__pycache__/*
+weddingwrangle/scripts/__pycache__/*

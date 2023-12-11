@@ -112,5 +112,4 @@ class Guest(models.Model):
     partner = models.OneToOneField("self", null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        self.full_name = self.first_name + " " + self.surname
-        return self.full_name
+        return self.first_name + " " + self.surname

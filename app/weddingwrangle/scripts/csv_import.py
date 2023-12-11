@@ -9,6 +9,7 @@ from weddingwrangle.models import (
     Guest,
     Audience,
 )
+from weddingwrangle.scripts import sync
 
 
 def generate_key():
@@ -28,47 +29,44 @@ def generate_key():
 
 
 def csv_import_base(file_handler):
+    partners = {}
     reader = csv.reader(file_handler)
     next(reader)  # Skip header row
 
     Guest.objects.all().delete()
 
     for row in reader:
-        print(row)
-
-        # Generate a unique 10-character string for the guest
-        rsvp_link = generate_key()
-
-        guest, created = Guest.objects.get_or_create(
-            title=Title.objects.get(name=row[0]),
-            first_name=row[1],
-            surname=row[2],
-            email_address=row[3],
+        guest = Guest.objects.get_or_create(
+            title=Title.objects.get(name=row[1]),
+            first_name=row[2],
+            surname=row[3],
+            email_address=row[4],
             position=Position.objects.get(name=row[5]),
             rsvp_status=RSVPStatus.objects.get(name="Pending"),
-            rsvp_link=rsvp_link,
+            rsvp_link=generate_key(),
         )
 
-        # Process dietaries
-        dietary_list = row[4].split(",")
+        guest[0].audiences.add(
+            Audience.objects.get(name="All potential guests (excludes Declined)")
+        )
+        guest[0].audiences.add(Audience.objects.get(name="All guests yet to RSVP"))
+
         try:
-            for dietary in dietary_list:
-                dietary = dietary.strip()
-                dietary_id = Dietary.objects.get(name=dietary)
-                guest.dietaries.add(dietary_id)
+            for dietary in row[9].split(","):
+                dietary = dietary.replace("[", "").replace("]", "").replace("'", "")
+                guest[0].dietaries.add(Dietary.objects.get(name=dietary))
         except Dietary.DoesNotExist:
             pass
 
-        # Process audiences
-        audience_list = row[5].split(",")
-        try:
-            for audience in audience_list:
-                audience = audience.strip()
-                audience_id = Audience.objects.get(name=audience)
-                guest.audiences.add(audience_id)
-        except Audience.DoesNotExist:
-            pass
+        if row[8]:
+            partners[guest[0]] = {"First name": row[8], "Surname": row[9]}
 
+        guest[0].save()
+
+    for guest, partner in partners.items():
+        guest.partner = Guest.objects.filter(
+            first_name=partner["First name"], surname=partner["Surname"]
+        )[0]
         guest.save()
 
 

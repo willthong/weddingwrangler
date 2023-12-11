@@ -134,7 +134,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 # STATIC_ROOT = BASE_DIR / "static"
 STATIC_ROOT = BASE_DIR / "weddingwrangle/static/"
-print(STATIC_ROOT)
 
 # SSL
 
