@@ -52,7 +52,7 @@ def csv_import_base(file_handler):
         guest[0].audiences.add(Audience.objects.get(name="All guests yet to RSVP"))
 
         try:
-            for dietary in row[9].split(","):
+            for dietary in row[10].split(","):
                 dietary = dietary.replace("[", "").replace("]", "").replace("'", "")
                 guest[0].dietaries.add(Dietary.objects.get(name=dietary))
         except Dietary.DoesNotExist:

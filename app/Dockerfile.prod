@@ -53,6 +53,3 @@ RUN chown -R app:app $APP_HOME
 
 # change to the app user
 USER app
-
-# Collect static files
-RUN python manage.py collectstatic --noinput
