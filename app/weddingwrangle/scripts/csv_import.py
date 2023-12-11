@@ -7,11 +7,13 @@ from weddingwrangle.models import (
     RSVPStatus,
     Dietary,
     Guest,
+    Audience,
 )
+
 
 def generate_key():
     while True:
-        key="".join(
+        key = "".join(
             random.choices(
                 string.ascii_uppercase + string.ascii_lowercase + string.digits, k=10
             )
@@ -23,6 +25,7 @@ def generate_key():
             break
         pass
     return key
+
 
 def csv_import_base(file_handler):
     reader = csv.reader(file_handler)
@@ -51,14 +54,24 @@ def csv_import_base(file_handler):
         try:
             for dietary in dietary_list:
                 dietary = dietary.strip()
-                dietary_id=Dietary.objects.get(name=dietary)
+                dietary_id = Dietary.objects.get(name=dietary)
                 guest.dietaries.add(dietary_id)
         except Dietary.DoesNotExist:
             pass
 
+        # Process audiences
+        audience_list = row[5].split(",")
+        try:
+            for audience in audience_list:
+                audience = audience.strip()
+                audience_id = Audience.objects.get(name=audience)
+                guest.audiences.add(audience_id)
+        except Audience.DoesNotExist:
+            pass
+
         guest.save()
 
-def run():
-   file_handler = open("weddingwrangle/import_data.csv")
-   csv_import_base(file_handler)
 
+def run():
+    file_handler = open("weddingwrangle/import_data.csv")
+    csv_import_base(file_handler)

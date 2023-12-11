@@ -12,12 +12,11 @@ def rsvp_time_update(self, form_instance):
     if (
         # The form response has an rsvp_status of "Accepted" but the original record
         # had something else
-        (form_instance.rsvp_status.id == 4 or form_instance.rsvp_status.id == 5) and 
-        (form_instance.rsvp_status.id != self.initial.get("rsvp_status"))
+        (form_instance.rsvp_status.id == 4 or form_instance.rsvp_status.id == 5)
+        and (form_instance.rsvp_status.id != self.initial.get("rsvp_status"))
     ):
         form_instance.rsvp_at = timezone.now()
     return form_instance
-
 
 
 class CustomModelChoiceField(forms.ModelChoiceField):
@@ -45,6 +44,7 @@ class RSVPForm(forms.ModelForm):
             form_instance.save()
             self.save_m2m()
         return form_instance
+
     class Meta:
         model = Guest
         fields = ["email_address", "rsvp_status", "dietaries"]
@@ -57,7 +57,7 @@ class RSVPForm(forms.ModelForm):
 
 class GuestForm(forms.ModelForm):
     """Extends ModelForm in order to customise field types and add an RSVP link,
-    audience and partner relationship if approopriate"""
+    audience and partner relationship if appropriate"""
 
     class Meta:
         model = Guest
@@ -84,14 +84,13 @@ class GuestForm(forms.ModelForm):
 
         if (
             # The form response rsvp_status is different to the the original record
-            (form_instance.rsvp_status.id != self.initial.get("rsvp_status")) or
-            (form_instance.position.id != self.initial.get("position")) 
+            (form_instance.rsvp_status.id != self.initial.get("rsvp_status"))
+            or (form_instance.position.id != self.initial.get("position"))
         ):
             form_instance = sync.sync_audience(form_instance)
 
         # Autogenerate reciprocal partner relationship
         form_instance = sync.sync_partner(form_instance)
-        form_instance.partner.save()
 
         if commit:
             form_instance.save()
@@ -119,7 +118,7 @@ class CSVForm(forms.Form):
     # Call this 'picture' so it gets copied from the form to the in-memory model
     # It will not be the "bytes", it will be the "InMemoryUploadedFile"
     # because we need to pull out things like content_type
-    csv = forms.FileField(required=True, label="File to Upload <= "+upload_limit_text)
+    csv = forms.FileField(required=True, label="File to Upload <= " + upload_limit_text)
     upload_field_name = "csv"
 
     # Data currently exists as request.FILES["csv"]
@@ -131,4 +130,4 @@ class CSVForm(forms.Form):
         if file is None:
             return
         if len(file) > self.upload_limit:
-            self.add_error("csv", "File must be < "+self.upload_limit_text+" bytes")
+            self.add_error("csv", "File must be < " + self.upload_limit_text + " bytes")

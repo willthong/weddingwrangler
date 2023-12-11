@@ -222,25 +222,6 @@ class EmailList(LoginRequiredMixin, CreateView):
         return url
 
 
-class EmailList(LoginRequiredMixin, CreateView):
-    model = Email
-    form_class = NewEmailForm
-    template_name_suffix = "_create"
-
-    # Retrieve list of emails
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["emails"] = Email.objects.filter(date_sent__isnull=False)
-        for email in context["emails"]:
-            email.count = email.guest.all().count()
-        return context
-
-    # Override get_success_url method to use the newly-created object's PK
-    def get_success_url(self):
-        url = reverse_lazy("email_confirm", args=[self.object.pk])
-        return url
-
-
 def generate_message(self, first_name, rsvp_url, rsvp_url_html):
     """Turn a request into an email message"""
     merged_message = self.object.text
@@ -345,7 +326,7 @@ def export_csv(response):
     response = HttpResponse(
         content_type="text/csv",
         headers={
-            "Content-Disposition": f"attachment; filename='guest_export_{date}.csv'"
+            "Content-Disposition": f"attachment; filename=guest_export_{date}.csv"
         },
     )
 
@@ -362,6 +343,7 @@ def export_csv(response):
             "RSVP at",
             "Partner",
             "Dietaries",
+            "Audiences",
         ]
     )
     for guest in Guest.objects.all():
@@ -372,6 +354,7 @@ def export_csv(response):
             rsvp_at = guest.rsvp_at.strftime("%Y-%m-%d %H:%M")
 
         dietaries = [dietary.name for dietary in guest.dietaries.all()]
+        audiences = [audience.name for audience in guest.audiences.all()]
 
         writer.writerow(
             [
@@ -385,6 +368,7 @@ def export_csv(response):
                 rsvp_at,
                 partner,
                 dietaries,
+                audiences,
             ]
         )
 

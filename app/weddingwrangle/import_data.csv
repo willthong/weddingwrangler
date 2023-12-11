@@ -1,46 +1,46 @@
-Title,First Name,Surname,Email,Dietaries,Position
-Mr,Luke,Skywalker,luke.skywalker@mailinator.com,Meat or fish,Groom
-Ms,Leia,Organa,leia.organa@mailinator.com,None,Guest
-Dr,Han,Solo,han.solo@mailinator.com,None,Groom
-Mr,Darth,Vader,darth.vader@mailinator.com,None,Guest
-Ms,Padmé,Amidala,padme.amidala@mailinator.com,"Meat or fish, Dairy, Eggs",Guest
-Mr,Obi-Wan,Kenobi,obiwan.kenobi@mailinator.com,None,Guest
-Ms,Ahsoka,Tano,ahsoka.tano@mailinator.com,Wheat,Guest
-Dr,Yoda,Yoda,yoda@mailinator.com,Vegetarian,Guest
-Mr,Anakin,Skywalker,,None,Guest
-Ms,Jyn,Erso,jyn.erso@mailinator.com,None,Guest
-Mr,Cassian,Andor,cassian.andor@mailinator.com,None,Guest
-Ms,Rey,Palpatine,rey.palpatine@mailinator.com,Vegetarian,Guest
-Dr,Finn,Dameron,finn@mailinator.com,None,Guest
-Mr,Poe,Dameron,poe.dameron@mailinator.com,None,Guest
-Ms,Rose,Tico,rose.tico@mailinator.com,Wheat,Guest
-Mr,Lando,Calrissian,lando.calrissian@mailinator.com,None,Guest
-Mr,Emperor,Palpatine,emperor.palpatine@mailinator.com,None,Guest
-Ms,Aayla,Secura,aayla.secura@mailinator.com,None,Guest
-Dr,Mace,Windu,,None,Guest
-Mr,Jar Jar,Binks,jarjar.binks@mailinator.com,Vegetarian,Guest
-Mr,Boba,Fett,boba.fett@mailinator.com,None,Guest
-Ms,Aurra,Sing,aurra.sing@mailinator.com,Wheat,Guest
-Dr,Dengar,Dengar,dengar@mailinator.com,None,Guest
-Mr,IG,Eighty-Eight,,None,Guest
-Ms,Zam,Wesell,zam.wesell@mailinator.com,Vegetarian,Guest
-Dr,Jango,Fett,jango.fett@mailinator.com,None,Guest
-Mr,Darth,Maul,,Meat or fish,Guest
-Ms,Aay,Ventress,aay.ventress@mailinator.com,None,Guest
-Dr,Count,Dooku,count.dooku@mailinator.com,None,Guest
-Mr,Grievous,Grievous,grievous@mailinator.com,None,Guest
-Ms,Asajj,Ventress,asajj.ventress@mailinator.com,None,Guest
-Dr,Sheev,Palpatine,sheev.palpatine@mailinator.com,None,Guest
-Mr,Watto,Watto,,Vegetarian,Guest
-Ms,Shmi,Skywalker,shmi.skywalker@mailinator.com,None,Guest
-Dr,Owen,Lars,owen.lars@mailinator.com,None,Guest
-Mr,Beru,Lars,beru.lars@mailinator.com,None,Guest
-Ms,Lama,Su,lama.su@mailinator.com,None,Guest
-Dr,Taun,We,taun.we@mailinator.com,Vegetarian,Guest
-Ms,Mon,Mothma,mon.mothma@mailinator.com,None,Guest
-Dr,Admiral,Ackbar,admiral.ackbar@mailinator.com,None,Guest
-Mr,Bail,Organa,bail.organa@mailinator.com,Vegetarian,Guest
-Ms,Mon,Mothma,mon.mothma2@mailinator.com,None,Guest
-Dr,Jabba,the Hutt,jabba.hutt@mailinator.com,"Meat or fish, Dairy, Eggs",Guest
-Mr,Bib,Fortuna,bib.fortuna@mailinator.com,None,Guest
-Ms,Salacious,Crumb,salacious.crumb@mailinator.com,None,Guest
+ID,Title,First name,Surname,Email address,Position,RSVP,RSVP at,Partner,Dietaries,Audiences
+1054,Mr,Luke,Skywalker,luke.skywalker@mailinator.com,Groom,Pending,,Han Solo,['Meat or fish'],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1055,Ms,Leia,Organa,leia.organa@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1056,Dr,Han,Solo,han.solo@mailinator.com,Groom,Pending,,Luke Skywalker,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1057,Mr,Darth,Vader,darth.vader@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1058,Ms,Padmé,Amidala,padme.amidala@mailinator.com,Guest,Pending,,,"['Dairy', 'Meat or fish', 'Eggs']","['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1059,Mr,Obi-Wan,Kenobi,obiwan.kenobi@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1060,Ms,Ahsoka,Tano,ahsoka.tano@mailinator.com,Guest,Pending,,,['Wheat'],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1061,Dr,Yoda,Yoda,yoda@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1062,Mr,Anakin,Skywalker,,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1063,Ms,Jyn,Erso,jyn.erso@mailinator.com,Guest,Pending,,IG Eighty-Eight,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1064,Mr,Cassian,Andor,cassian.andor@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1065,Ms,Rey,Palpatine,rey.palpatine@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1066,Dr,Finn,Dameron,finn@mailinator.com,Guest,Pending,,Poe Dameron,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1067,Mr,Poe,Dameron,poe.dameron@mailinator.com,Guest,Pending,,Finn Dameron,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1068,Ms,Rose,Tico,rose.tico@mailinator.com,Guest,Pending,,,['Wheat'],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1069,Mr,Lando,Calrissian,lando.calrissian@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1070,Mr,Emperor,Palpatine,emperor.palpatine@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1071,Ms,Aayla,Secura,aayla.secura@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1072,Dr,Mace,Windu,,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1073,Mr,Jar Jar,Binks,jarjar.binks@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1074,Mr,Boba,Fett,boba.fett@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1075,Ms,Aurra,Sing,aurra.sing@mailinator.com,Guest,Pending,,Mon Mothma,['Wheat'],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1076,Dr,Dengar,Dengar,dengar@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1077,Mr,IG,Eighty-Eight,,Guest,Pending,,Jyn Erso,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1078,Ms,Zam,Wesell,zam.wesell@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1079,Dr,Jango,Fett,jango.fett@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1080,Mr,Darth,Maul,,Guest,Pending,,,['Meat or fish'],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1081,Ms,Aay,Ventress,aay.ventress@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1082,Dr,Count,Dooku,count.dooku@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1083,Mr,Grievous,Grievous,grievous@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1084,Ms,Asajj,Ventress,asajj.ventress@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1085,Dr,Sheev,Palpatine,sheev.palpatine@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1086,Mr,Watto,Watto,,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1087,Ms,Shmi,Skywalker,shmi.skywalker@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1088,Dr,Owen,Lars,owen.lars@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1089,Mr,Beru,Lars,beru.lars@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1090,Ms,Lama,Su,lama.su@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1091,Dr,Taun,We,taun.we@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1092,Ms,Mon,Mothma,mon.mothma@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1093,Dr,Admiral,Ackbar,admiral.ackbar@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1094,Mr,Bail,Organa,bail.organa@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1095,Ms,Mon,Mothma,mon.mothma2@mailinator.com,Guest,Pending,,Aurra Sing,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1096,Dr,Jabba,the Hutt,jabba.hutt@mailinator.com,Guest,Pending,,,"['Dairy', 'Meat or fish', 'Eggs']","['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1097,Mr,Bib,Fortuna,bib.fortuna@mailinator.com,Guest,Pending,,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
+1098,Ms,Salacious,Crumb,salacious.crumb@mailinator.com,Guest,Pending,2023-12-10 17:46,,[],"['All guests yet to RSVP', 'All potential guests (excludes Declined)']"
