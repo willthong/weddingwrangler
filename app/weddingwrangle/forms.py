@@ -39,7 +39,8 @@ class RSVPForm(forms.ModelForm):
         # Override ModelForm's save method
         form_instance = super().save(commit=False)
         form_instance = rsvp_time_update(self, form_instance)
-        form_instance = audience_update(self, form_instance)
+        # form_instance = audience_update(self, form_instance)
+        form_instance = sync.sync_audience(form_instance)
         if commit:
             form_instance.save()
             self.save_m2m()
@@ -47,11 +48,15 @@ class RSVPForm(forms.ModelForm):
 
     class Meta:
         model = Guest
-        fields = ["email_address", "rsvp_status", "dietaries"]
-        widgets = {"dietaries": forms.CheckboxSelectMultiple}
+        fields = ["email_address", "rsvp_status", "dietaries", "starter", "main"]
+        widgets = {
+            "dietaries": forms.CheckboxSelectMultiple,
+        }
         labels = {
             "dietaries": "Please don't feed me...",
             "rsvp_status": "RSVP",
+            "starter": "Starter choice",
+            "main": "Main course choice",
         }
 
 
@@ -68,6 +73,8 @@ class GuestForm(forms.ModelForm):
             "rsvp_status",
             "email_address",
             "position",
+            "starter",
+            "main",
             "dietaries",
             "partner",
         ]

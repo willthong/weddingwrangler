@@ -49,6 +49,18 @@ class DietaryOther(models.Model):
     class Meta:
         verbose_name_plural = "Dietaries (Other)"
 
+class Starter(models.Model):
+    name = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.name
+
+
+class Main(models.Model):
+    name = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.name
 
 class Audience(models.Model):
     # M2M relationship with guests is defined within Guest class
@@ -97,6 +109,18 @@ class Guest(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+    )
+    starter = models.ForeignKey(
+        Starter,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    main = models.ForeignKey(
+        Main,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     # Many-to-many fields

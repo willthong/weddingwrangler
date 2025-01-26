@@ -1,157 +1,185 @@
 [
-    {
-        "model": "weddingwrangle.title",
-        "pk": 1,
-        "fields": {
-            "name": "Mr"
-        }
-    },
-    {
-        "model": "weddingwrangle.title",
-        "pk": 2,
-        "fields": {
-            "name": "Ms"
-        }
-    },
-    {
-        "model": "weddingwrangle.title",
-        "pk": 3,
-        "fields": {
-            "name": "Dr"
-        }
-    },
-    {
-        "model": "weddingwrangle.title",
-        "pk": 4,
-        "fields": {
-            "name": "Mx"
-        }
-    },
-    {
-        "model": "weddingwrangle.position",
-        "pk": 1,
-        "fields": {
-            "name": "Groom"
-        }
-    },
-    {
-        "model": "weddingwrangle.position",
-        "pk": 2,
-        "fields": {
-            "name": "Bride"
-        }
-    },
-    {
-        "model": "weddingwrangle.position",
-        "pk": 3,
-        "fields": {
-            "name": "Guest"
-        }
-    },
-    {
-        "model": "weddingwrangle.rsvpstatus",
-        "pk": 4,
-        "fields": {
-            "name": "Accepted",
-            "verbose_name": "I am delighted to accept"
-        }
-    },
-    {
-        "model": "weddingwrangle.rsvpstatus",
-        "pk": 5,
-        "fields": {
-            "name": "Declined",
-            "verbose_name": "I cannot attend"
-        }
-    },
-    {
-        "model": "weddingwrangle.rsvpstatus",
-        "pk": 6,
-        "fields": {
-            "name": "Pending",
-            "verbose_name": "Not sure yet..."
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 1,
-        "fields": {
-            "name": "Cow's milk (butter is fine)"
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 2,
-        "fields": {
-            "name": "Dairy"
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 3,
-        "fields": {
-            "name": "Nuts"
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 4,
-        "fields": {
-            "name": "Meat or fish"
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 5,
-        "fields": {
-            "name": "Eggs"
-        }
-    },
-    {
-        "model": "weddingwrangle.dietary",
-        "pk": 6,
-        "fields": {
-            "name": "Wheat"
-        }
-    },
-    {
-        "model": "weddingwrangle.audience",
-        "pk": 2,
-        "fields": {
-            "name": "All attending guests",
-            "positions": [
-                3
-            ],
-            "rsvp_statuses": [
-                4
-            ]
-        }
-    },
-    {
-        "model": "weddingwrangle.audience",
-        "pk": 3,
-        "fields": {
-            "name": "All guests yet to RSVP",
-            "positions": [
-                3
-            ],
-            "rsvp_statuses": [
-                6
-            ]
-        }
-    },
-    {
-        "model": "weddingwrangle.audience",
-        "pk": 4,
-        "fields": {
-            "name": "All potential guests (excludes Declined)",
-            "positions": [
-                3
-            ],
-            "rsvp_statuses": [
-                4,
-                6
-            ]
-        }
+  {
+    "model": "weddingwrangle.title",
+    "pk": 1,
+    "fields": {
+      "name": "Mr"
     }
+  },
+  {
+    "model": "weddingwrangle.title",
+    "pk": 2,
+    "fields": {
+      "name": "Ms"
+    }
+  },
+  {
+    "model": "weddingwrangle.title",
+    "pk": 3,
+    "fields": {
+      "name": "Dr"
+    }
+  },
+  {
+    "model": "weddingwrangle.title",
+    "pk": 4,
+    "fields": {
+      "name": "Mx"
+    }
+  },
+  {
+    "model": "weddingwrangle.position",
+    "pk": 1,
+    "fields": {
+      "name": "Groom"
+    }
+  },
+  {
+    "model": "weddingwrangle.position",
+    "pk": 2,
+    "fields": {
+      "name": "Bride"
+    }
+  },
+  {
+    "model": "weddingwrangle.position",
+    "pk": 3,
+    "fields": {
+      "name": "Guest"
+    }
+  },
+  {
+    "model": "weddingwrangle.rsvpstatus",
+    "pk": 4,
+    "fields": {
+      "name": "Accepted",
+      "verbose_name": "I am delighted to accept"
+    }
+  },
+  {
+    "model": "weddingwrangle.rsvpstatus",
+    "pk": 5,
+    "fields": {
+      "name": "Declined",
+      "verbose_name": "I cannot attend"
+    }
+  },
+  {
+    "model": "weddingwrangle.rsvpstatus",
+    "pk": 6,
+    "fields": {
+      "name": "Pending",
+      "verbose_name": "Not sure yet..."
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 1,
+    "fields": {
+      "name": "Cow's milk (butter is fine)"
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 2,
+    "fields": {
+      "name": "Dairy"
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 3,
+    "fields": {
+      "name": "Nuts"
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 4,
+    "fields": {
+      "name": "Meat or fish"
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 5,
+    "fields": {
+      "name": "Eggs"
+    }
+  },
+  {
+    "model": "weddingwrangle.dietary",
+    "pk": 6,
+    "fields": {
+      "name": "Wheat"
+    }
+  },
+  {
+    "model": "weddingwrangle.audience",
+    "pk": 2,
+    "fields": {
+      "name": "All attending guests",
+      "positions": [
+        3
+      ],
+      "rsvp_statuses": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "weddingwrangle.audience",
+    "pk": 3,
+    "fields": {
+      "name": "All guests yet to RSVP",
+      "positions": [
+        3
+      ],
+      "rsvp_statuses": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "weddingwrangle.audience",
+    "pk": 4,
+    "fields": {
+      "name": "All potential guests (excludes Declined)",
+      "positions": [
+        3
+      ],
+      "rsvp_statuses": [
+        4,
+        6
+      ]
+    }
+  },
+  {
+    "model": "weddingwrangle.starter",
+    "pk": 1,
+    "fields": {
+      "name": "Seabass Ceviche, Fennel, Orange, Crème Fraîche & Chilli"
+    }
+  },
+  {
+    "model": "weddingwrangle.starter",
+    "pk": 2,
+    "fields": {
+      "name": "Burrata, Pea Purée, Panagratto, Fresh Peas & Pea Shoots"
+    }
+  },
+  {
+    "model": "weddingwrangle.main",
+    "pk": 1,
+    "fields": {
+      "name": "Middle White Porchetta, Broad Bean Purée & Roasted Shallots"
+    }
+  },
+  {
+    "model": "weddingwrangle.main",
+    "pk": 2,
+    "fields": {
+      "name": "Potato, Camembert & Wild Mushroom Pithivier with a Watercress & Pickled Walnut Salad"
+    }
+  }
 ]
