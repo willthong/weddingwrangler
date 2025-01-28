@@ -39,7 +39,6 @@ class RSVPForm(forms.ModelForm):
         # Override ModelForm's save method
         form_instance = super().save(commit=False)
         form_instance = rsvp_time_update(self, form_instance)
-        # form_instance = audience_update(self, form_instance)
         form_instance = sync.sync_audience(form_instance)
         if commit:
             form_instance.save()

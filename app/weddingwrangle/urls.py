@@ -57,11 +57,11 @@ urlpatterns = [
     ),
     path(
         "rsvp/<str:rsvp_link>/partner/",
-        views.RSVPPartner.as_view(success_url=reverse_lazy("rsvp_thank_partner")),
+        views.RSVPPartner.as_view(),
         name="rsvp_partner",
     ),
     path(
-        "rsvp/thankyou/",
+        "rsvpthankyou/",
         TemplateView.as_view(template_name="weddingwrangle/rsvp_thank_partner.html"),
         name="rsvp_thank_partner",
     ),
