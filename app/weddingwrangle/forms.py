@@ -116,6 +116,16 @@ class NewEmailForm(forms.ModelForm):
         ]
         widgets = {"audience": forms.RadioSelect, "text": forms.Textarea}
 
+class RSVPEmailTemplate(forms.ModelForm):
+    """Extends ModelForm in order to customise field types"""
+
+    class Meta:
+        model = Email
+        fields = [
+            "text",
+        ]
+        widgets = {"text": forms.Textarea}
+
 
 class CSVForm(forms.Form):
     upload_limit = 2 * 1024 * 1024

@@ -181,5 +181,15 @@
     "fields": {
       "name": "Potato, Camembert & Wild Mushroom Pithivier with a Watercress & Pickled Walnut Salad"
     }
+  },
+  {
+    "model": "weddingwrangle.email",
+    "pk": 1,
+    "fields": {
+      "subject": "Thank you for RSVPing!",
+      "text": "Dear {{ guest_name }},\r\n\r\nThank you so much for RSVPing to our wedding. Here are the details you've provided us, but your RSVP link will allow you to update these details up to 15 June.\r\n\r\n{{ rsvp_details }}\r\n\r\nLove,\r\nBeccy & Will",
+      "date_sent": null,
+      "audience": null
+    }
   }
 ]

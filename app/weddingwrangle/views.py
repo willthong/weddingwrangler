@@ -4,7 +4,7 @@ from io import StringIO
 import os, shutil
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
-from re import sub, search
+import re
 from typing import NamedTuple
 from zipfile import ZipFile
 from django.conf import settings
@@ -25,7 +25,13 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from weddingwrangle.forms import RSVPForm, GuestForm, NewEmailForm, CSVForm
+from weddingwrangle.forms import (
+    RSVPForm,
+    GuestForm,
+    NewEmailForm,
+    RSVPEmailTemplate,
+    CSVForm,
+)
 from weddingwrangle.models import Guest, Email
 from weddingwrangle.tables import GuestTable
 from qr_code.qrcode.serve import make_qr_code_url
@@ -225,18 +231,18 @@ class EmailList(LoginRequiredMixin, CreateView):
 def generate_message(self, first_name, rsvp_url, rsvp_url_html):
     """Turn a request into an email message"""
     merged_message = self.object.text
-    if search("{{ rsvp_qr_code }}", merged_message):
+    if re.search("{{ rsvp_qr_code }}", merged_message):
         qr_options = QRCodeOptions(image_format="png", size="s")
         qr_url = make_qr_code_url(rsvp_url, qr_options)
         qr_url = self.request.build_absolute_uri(qr_url)
-        merged_message = sub(
+        merged_message = re.sub(
             "{{ rsvp_qr_code }}",
             f'<img src="{qr_url}" alt="{rsvp_url}" title="QR Code" width="200"'
             f'height="200" style="display:block">',
             merged_message,
         )
-    merged_message = sub("{{ first_name }}", first_name, merged_message)
-    merged_message = sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
+    merged_message = re.sub("{{ first_name }}", first_name, merged_message)
+    merged_message = re.sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
     merged_message = mark_safe(merged_message)
 
     # https://stackoverflow.com/a/49894618/3161714
@@ -298,6 +304,20 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
 class EmailDetail(LoginRequiredMixin, DetailView):
     model = Email
     template_name = "weddingwrangle/email_detail.html"
+
+
+class RSVPEmailTemplate(LoginRequiredMixin, UpdateView):
+    model = Email
+    form_class = RSVPEmailTemplate
+    template_name = "weddingwrangle/email_rsvp_template.html"
+
+
+    # Overriding get_object so that the RSVP link captured by the URL dispatcher is used
+    # to find the object. self.kwargs is a dictionary containing captured URL parameters.
+    def get_object(self):
+        return self.model.objects.get(subject="Thank you for RSVPing!")
+
+
 
 
 class GuestUpload(LoginRequiredMixin, View):

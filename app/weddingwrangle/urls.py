@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from . import views
@@ -37,6 +38,13 @@ urlpatterns = [
     path("guests/<int:pk>/delete/", views.GuestDelete.as_view(), name="guest_delete"),
     path("email/", views.EmailList.as_view(), name="email_create"),
     path(
+        "email/rsvp_template/",
+        views.RSVPEmailTemplate.as_view(
+            success_url=reverse_lazy("email_create"),
+        ),
+        name="rsvp_email_template",
+    ),
+    path(
         "email/<int:pk>/email_confirm/",
         views.EmailConfirm.as_view(
             success_url=reverse_lazy("email_create"),
@@ -45,6 +53,11 @@ urlpatterns = [
     ),
     path("email/<int:pk>/detail/", views.EmailDetail.as_view(), name="email_detail"),
     path("qr_code/", include("qr_code.urls", namespace="qr_code"), name="qr_urls"),
+    path(
+        "rsvp/thankyou/",
+        TemplateView.as_view(template_name="weddingwrangle/rsvp_thank_partner.html"),
+        name="rsvp_thank_partner",
+    ),
     path(
         "rsvp/<str:rsvp_link>/",
         views.RSVPView.as_view(success_url=reverse_lazy("rsvp_thank")),
@@ -59,11 +72,6 @@ urlpatterns = [
         "rsvp/<str:rsvp_link>/partner/",
         views.RSVPPartner.as_view(),
         name="rsvp_partner",
-    ),
-    path(
-        "rsvpthankyou/",
-        TemplateView.as_view(template_name="weddingwrangle/rsvp_thank_partner.html"),
-        name="rsvp_thank_partner",
     ),
     path("accounts/", include("django.contrib.auth.urls")),
     # https://stackoverflow.com/a/63445257/3161714

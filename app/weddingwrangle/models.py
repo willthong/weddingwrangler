@@ -77,7 +77,12 @@ class Email(models.Model):
     subject = models.CharField(max_length=100)
     text = models.CharField(max_length=10000000)
     date_sent = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
-    audience = models.ForeignKey(Audience, on_delete=models.CASCADE, related_name="email")
+    audience = models.ForeignKey(
+        Audience, 
+        on_delete=models.CASCADE, 
+        related_name="email", 
+        null=True
+    )
 
     def __str__(self):
         return self.subject
