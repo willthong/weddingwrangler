@@ -1,0 +1,45 @@
+{% extends "base_bootstrap.html" %}
+
+
+{% load crispy_forms_tags %}
+{% block content %}
+
+  <h1>RSVP email template</h1>
+
+  <p>
+    This template determines what is sent to each guest when they RSVP to the wedding.
+  </p>
+
+  <p>
+    <form action="" method="post" id="rsvp_email_template" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <a href="#" class="template-link" data-textpart="rsvp_details">Add RSVP details</a>
+      <br>
+      <input type="submit" value="save">
+    </form>
+  </p>
+
+
+  {% verbatim %}
+
+<script>
+  $(function () {
+    $('.template-link').on('click', function () { 
+      var textbox = $("#id_text");      
+      var textpart = $(this).data('textpart');
+      var startPos = textbox[0].selectionStart;
+      var endPos = textbox[0].selectionEnd;
+      textbox.val(textbox.val().substring(0, startPos) + "{{ " + textpart + " }}"
+        + textbox.val().substring(endPos));
+    });
+  });
+
+</script>
+  {% endverbatim %}
+
+{% endblock %}
+
+
+
+
