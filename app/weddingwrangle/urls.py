@@ -73,6 +73,11 @@ urlpatterns = [
         views.RSVPPartner.as_view(),
         name="rsvp_partner",
     ),
+    path(
+        "details/", 
+        TemplateView.as_view(template_name="weddingwrangle/wedding_details.html"),
+        name="details",
+    ),
     path("accounts/", include("django.contrib.auth.urls")),
     # https://stackoverflow.com/a/63445257/3161714
     path(

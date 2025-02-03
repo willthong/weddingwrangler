@@ -4,7 +4,7 @@
   <h1> Thank you for your response!</h1>
 
   <p> We're so looking forward to seeing you on our wedding day! If you want to update
-  your response, you can do so at the same link you used to get here. 
+  your response, you can do so at the same link you used to get here until 11 June. 
 
   {% if object.partner is not None %}
     </p>
@@ -15,10 +15,14 @@
     </p>
 
     <p>
-      Otherwise, please feel free to close this page.
+    If you'd instead like more details about the big day, you can 
+      <a href="{% url 'details' %}">click here.</a>. Otherwise, feel free to close this 
+      page.
     </p>
   {% else %}
-    Feel free to close this page now. </p>
+  If you'd instead like more details about the big day, you can 
+    <a href="{% url 'details' %}">click here.</a> Otherwise, feel free to close this 
+    page now. </p>
   {% endif %}
 
     
