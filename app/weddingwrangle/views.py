@@ -1,20 +1,18 @@
 import csv
-from datetime import timedelta, datetime, time
+from datetime import timedelta, datetime, date
 from io import StringIO
 import os, shutil
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 import re
 from typing import NamedTuple
-from zipfile import ZipFile
 from django.conf import settings
-from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db.models import Min
-from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django_tables2 import SingleTableView
 from django.template.loader import render_to_string
@@ -59,6 +57,33 @@ class RSVPView(UpdateView):
     # to find the object. self.kwargs is a dictionary containing captured URL parameters.
     def get_object(self):
         return self.model.objects.get(rsvp_link=self.kwargs["rsvp_link"])
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        guest = Guest.objects.get(rsvp_link=self.kwargs["rsvp_link"])
+        if guest.email_address:
+            email_object = Email.objects.get(subject="Thank you for RSVPing!")
+            merged_message, rendered_message = generate_message(
+                email_object,
+                first_name=guest.first_name,
+                rsvp_status=guest.rsvp_status,
+                starter=guest.starter,
+                main=guest.main,
+                dietaries = "; ".join(
+                    [dietary.name for dietary in list(guest.dietaries.all())]
+                )
+            )
+            # https://docs.djangoproject.com/en/4.2/topics/email/
+            send_mail(
+                "Thank you for RSVPing!",
+                message=merged_message,
+                from_email=settings.FROM_EMAIL,
+                recipient_list=[guest.email_address],
+                fail_silently=False,
+                html_message=rendered_message,
+            )
+
+        return response
 
 
 class RSVPThank(DetailView):
@@ -120,7 +145,7 @@ def get_all_dates():
 def load_attending_stats(date):
     # Defining a named tuple rather than multiple lists
     class AttendingStats(NamedTuple):
-        date: datetime.date
+        date: date
         attending: int
         declined: int
         pending: int
@@ -228,9 +253,19 @@ class EmailList(LoginRequiredMixin, CreateView):
         return url
 
 
-def generate_message(self, first_name, rsvp_url, rsvp_url_html):
-    """Turn a request into an email message"""
-    merged_message = self.object.text
+def generate_message(self, **kwargs):
+    """Turn a request or unmerged message into a merged email message"""
+    if hasattr(self, "object"):
+        merged_message = self.object.text
+    else:
+        merged_message = self.text
+    first_name = kwargs.get("first_name", "")
+    rsvp_url = kwargs.get("rsvp_url", "")
+    rsvp_url_html = kwargs.get("rsvp_url_html", "")
+    rsvp_status = kwargs.get("rsvp_status", "")
+    starter = kwargs.get("starter", "")
+    main = kwargs.get("main", "")
+    dietaries = kwargs.get("dietaries", [])
     if re.search("{{ rsvp_qr_code }}", merged_message):
         qr_options = QRCodeOptions(image_format="png", size="s")
         qr_url = make_qr_code_url(rsvp_url, qr_options)
@@ -241,6 +276,28 @@ def generate_message(self, first_name, rsvp_url, rsvp_url_html):
             f'height="200" style="display:block">',
             merged_message,
         )
+    if re.search("{{ rsvp_details }}", merged_message):
+        merge_table = f"""
+            <table>
+                <tr>
+                    <td>RSVP</td>
+                    <td>{rsvp_status}</td>
+                </tr>
+                <tr>
+                    <td>Starter</td>
+                    <td>{starter}</td>
+                </tr>
+                <tr>
+                    <td>Main course</td>
+                    <td>{main}</td>
+                </tr>
+                <tr>
+                    <td>I can't eat:</td>
+                    <td>{dietaries}</td>
+                </tr>
+            </table>
+        """
+        merged_message = re.sub("{{ rsvp_details }}",merge_table,merged_message)
     merged_message = re.sub("{{ first_name }}", first_name, merged_message)
     merged_message = re.sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
     merged_message = mark_safe(merged_message)
@@ -285,7 +342,10 @@ class EmailConfirm(LoginRequiredMixin, UpdateView):
             )
             rsvp_url_html = "<a href='" + rsvp_url + "'>" + rsvp_url + "</a>"
             merged_message, rendered_message = generate_message(
-                self, first_name, rsvp_url, rsvp_url_html
+                self, 
+                first_name=first_name, 
+                rsvp_url=rsvp_url, 
+                rsvp_url_html=rsvp_url_html
             )
 
             # https://docs.djangoproject.com/en/4.2/topics/email/
@@ -316,9 +376,6 @@ class RSVPEmailTemplate(LoginRequiredMixin, UpdateView):
     # to find the object. self.kwargs is a dictionary containing captured URL parameters.
     def get_object(self):
         return self.model.objects.get(subject="Thank you for RSVPing!")
-
-
-
 
 class GuestUpload(LoginRequiredMixin, View):
     template_name = "weddingwrangle/guest_upload.html"
