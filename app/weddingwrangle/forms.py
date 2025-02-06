@@ -47,12 +47,21 @@ class RSVPForm(forms.ModelForm):
 
     class Meta:
         model = Guest
-        fields = ["email_address", "rsvp_status", "dietaries", "starter", "main"]
+        fields = [
+            "email_address", 
+            "rsvp_status", 
+            "dietaries", 
+            "dietary_other",
+            "starter", 
+            "main"
+        ]
         widgets = {
             "dietaries": forms.CheckboxSelectMultiple,
+            "dietary_other": forms.TextInput(attrs={"placeholder": "Other dietaries"}),
         }
         labels = {
             "dietaries": "Please don't feed me...",
+            "dietary_other": "",
             "rsvp_status": "RSVP",
             "starter": "Starter choice",
             "main": "Main course choice",
@@ -75,6 +84,7 @@ class GuestForm(forms.ModelForm):
             "starter",
             "main",
             "dietaries",
+            "dietary_other",
             "partner",
         ]
         widgets = {"dietaries": forms.CheckboxSelectMultiple}

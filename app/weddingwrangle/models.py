@@ -40,15 +40,6 @@ class Dietary(models.Model):
         verbose_name_plural = "Dietaries"
 
 
-class DietaryOther(models.Model):
-    name = models.CharField(max_length=30)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "Dietaries (Other)"
-
 class Starter(models.Model):
     name = models.CharField(max_length=500)
 
@@ -70,8 +61,6 @@ class Audience(models.Model):
 
     def __str__(self):
         return self.name
-
-
 
 class Email(models.Model):
     subject = models.CharField(max_length=100)
@@ -96,6 +85,11 @@ class Guest(models.Model):
     rsvp_link = models.CharField(max_length=15, verbose_name="RSVP Link")
     rsvp_qr = models.BinaryField(
         null=True, blank=True, editable=False, verbose_name="RSVP QR"
+    )
+    dietary_other = models.CharField(
+        max_length=1000, 
+        blank=True,
+        verbose_name="Dietaries (other)"
     )
 
     # One-to-many fields
